@@ -23,4 +23,4 @@
 ## 📥 Установка по тегу
 2. Сконируйте по тегу:
     ```bash
-    git clone --branch <имя_тега> --single-branch <URL-репозитория>
+    git clone --branch <имя_тега> --single-branch git clone https://github.com/solixoi/UNITAZ.git
