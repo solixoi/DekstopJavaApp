@@ -55,4 +55,19 @@ public class UserRepository extends GenericRepository<User, Long> {
             em.close();
         }
     }
+
+    public User findByUsernameOrEmailWithPassword(String usernameOrEmail, String password) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT u FROM User u WHERE (u.username = :usernameOrEmail or u.email = :usernameOrEmail) and u.password = :password", User.class)
+                    .setParameter("usernameOrEmail", usernameOrEmail)
+                    .setParameter("password", password)
+                    .getSingleResult();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        } finally {
+            em.close();
+        }
+    }
 }

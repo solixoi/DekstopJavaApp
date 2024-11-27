@@ -6,6 +6,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Data
 @Setter
 public class Response {
     private ResponseStatus status;

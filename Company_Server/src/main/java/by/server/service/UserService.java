@@ -19,4 +19,13 @@ public class UserService {
         };
         userRepo.save(user);
     }
+
+    public User findByUsernameOrEmailOrPassword(String usernameOrEmail, String password) {
+        User isUser = userRepo.findByUsernameOrEmailWithPassword(usernameOrEmail, password);
+        System.out.println(isUser);
+        if(isUser == null){
+            throw new RuntimeException("Invalid username or password");
+        }
+        return isUser;
+    }
 }

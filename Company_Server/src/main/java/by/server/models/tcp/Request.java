@@ -1,14 +1,12 @@
 package by.server.models.tcp;
 
 import by.server.models.enums.RequestType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Data
 @Setter
 public class Request {
     private RequestType requestType;

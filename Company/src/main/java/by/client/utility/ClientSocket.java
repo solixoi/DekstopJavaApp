@@ -1,5 +1,6 @@
 package by.client.utility;
 
+import by.client.models.entities.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,7 @@ public class ClientSocket {
     private static final ClientSocket INSTANCE = new ClientSocket();
     private static Socket socket;
     private BufferedReader in;
+    private static User user;
     private PrintWriter out;
 
     private ClientSocket() {
@@ -36,5 +38,13 @@ public class ClientSocket {
 
     public void setSocket(Socket socket) {
         ClientSocket.socket = socket;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

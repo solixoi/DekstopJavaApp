@@ -1,14 +1,13 @@
 package by.server.models.entities;
 
+import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.List;
 
+@Data
 @Getter
 @Setter
 @NoArgsConstructor
@@ -31,6 +30,16 @@ public class User {
     @Column(name = "date_creation")
     private Timestamp dateCreation;
 
+    public User(String username, Timestamp dateCreation, String password, String email, String firstName, String lastName, Role role) {
+        this.username = username;
+        this.dateCreation = dateCreation;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.role = role;
+    }
+
     @PrePersist
     protected void onCreate() {
         if (dateCreation == null) {
@@ -48,12 +57,12 @@ public class User {
     @Column(name = "last_name", nullable = false, length = 20)
     private String lastName;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Log> logs;
 
-    @OneToMany(mappedBy = "createdBy")
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.EAGER)
     private List<Product> products;
 }

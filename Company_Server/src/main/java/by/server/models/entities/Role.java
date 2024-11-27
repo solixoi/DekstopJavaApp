@@ -1,11 +1,9 @@
 package by.server.models.entities;
 
 import by.server.models.enums.Roles;
+import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +22,7 @@ public class Role {
     @Column(name = "role", nullable = false, length = 20)
     private Roles role;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @MapsId
     @JoinColumn(name = "user_id")
     private User user;
