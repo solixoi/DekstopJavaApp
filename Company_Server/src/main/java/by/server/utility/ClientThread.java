@@ -1,5 +1,6 @@
 package by.server.utility;
 
+import by.server.models.DTO.UserDTO;
 import by.server.models.entities.Role;
 import by.server.models.entities.User;
 import by.server.models.enums.ResponseStatus;
@@ -54,13 +55,10 @@ public class ClientThread implements Runnable {
 
                 switch (request.getRequestType()){
                     case REGISTER -> {
-                        Role role = new Role();
-                        User user = gson.fromJson(request.getRequestMessage(), User.class);
-                        role.setRole(Roles.USER);
-                        role.setUser(user);
-                        user.setRole(role);
+                        UserDTO user = gson.fromJson(request.getRequestMessage(), UserDTO.class);
+                        user.setRole(Roles.USER);
                         try {
-                            userService.save(user);
+                            userService.save(new User(user));
                             response = new Response(ResponseStatus.OK, "Register", "");;
                         } catch (Exception e) {
                             response = new Response(ResponseStatus.ERROR, e.getMessage(), "");
@@ -69,7 +67,8 @@ public class ClientThread implements Runnable {
                     }
                     case LOGIN -> {
                         try {
-                            User user = gson.fromJson(request.getRequestMessage(), User.class);
+                            UserDTO userDTO = gson.fromJson(request.getRequestMessage(), UserDTO.class);
+                            User user = new User(userDTO);
                             User returnUser = userService.findByUsernameOrEmailOrPassword(user.getUsername() == null ? user.getEmail() : user.getUsername(), user.getPassword());
                             response = new Response();
                             Map<String, Object> responseData = new HashMap<>();

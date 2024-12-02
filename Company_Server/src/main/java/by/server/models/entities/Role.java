@@ -1,7 +1,6 @@
 package by.server.models.entities;
 
 import by.server.models.enums.Roles;
-import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,6 +11,11 @@ import lombok.*;
 @Entity
 @Table(name = "roles")
 public class Role {
+
+    public Role(User user, Roles role) {
+        this.user = user;
+        this.role = role;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

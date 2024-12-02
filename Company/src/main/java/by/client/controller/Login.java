@@ -10,17 +10,12 @@ import by.client.utility.ClientSocket;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
-import java.lang.ref.Cleaner;
-import java.lang.reflect.Type;
-import java.net.Socket;
-import java.util.Map;
 
 public class Login {
 

@@ -1,19 +1,20 @@
-package by.client.models.entities;
+package by.server.models.DTO;
 
-import by.client.models.enums.Roles;
+import by.server.models.enums.Roles;
 import lombok.*;
+
 import java.sql.Timestamp;
 
 @Getter
 @Setter
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class User {
+@NoArgsConstructor
+public class UserDTO {
     private long id;
     private String password;
     private String username;
-    private Timestamp dateCreation;
+    private Timestamp dataCreation;
     private String email;
     private String firstName;
     private String lastName;

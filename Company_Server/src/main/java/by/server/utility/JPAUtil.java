@@ -1,8 +1,12 @@
 package by.server.utility;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,6 +19,10 @@ public class JPAUtil {
     public static EntityManagerFactory getEntityManagerFactory() {
         if (entityManagerFactory == null) {
             try {
+                LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+                Logger logger = loggerContext.getLogger("org.hibernate");
+                logger.setLevel(Level.OFF);
+
                 Thread.currentThread().setContextClassLoader(new ClassLoader() {
                     @Override
                     public Enumeration<URL> getResources(String name) throws IOException {
@@ -39,7 +47,6 @@ public class JPAUtil {
         return getEntityManagerFactory().createEntityManager();
     }
 
-    // Закрытие EntityManagerFactory
     public static void shutdown() {
         if (entityManagerFactory != null) {
             entityManagerFactory.close();
