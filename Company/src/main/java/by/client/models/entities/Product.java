@@ -15,7 +15,8 @@ import java.util.List;
 public class Product {
     private String productName;
     private BigDecimal costPrice;
-    private BigDecimal plannedPrice;
+    private BigDecimal plannedRevenue;
     private BigDecimal finalPrice;
+    private BigDecimal markup;
     private User createdBy;
 }

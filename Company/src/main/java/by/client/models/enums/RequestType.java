@@ -2,5 +2,6 @@ package by.client.models.enums;
 
 public enum RequestType {
     REGISTER,
-    LOGIN
+    LOGIN,
+    CALCULATE_PRODUCT_PRICE
 }

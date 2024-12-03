@@ -1,5 +1,6 @@
 package by.server.models.entities;
 
+import by.server.models.DTO.ProductDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,14 @@ import java.util.List;
 @Table(name = "products")
 public class Product {
 
+    public Product(ProductDTO productDTO){
+        this.productName = productDTO.getProductName();
+        this.costPrice = productDTO.getCostPrice();
+        this.plannedRevenue = productDTO.getPlannedRevenue();
+        this.finalPrice = productDTO.getFinalPrice();
+        this.markup = productDTO.getMarkup();
+        this.createdBy = new User(productDTO.getCreatedBy());
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")

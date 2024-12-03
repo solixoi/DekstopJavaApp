@@ -1,5 +1,6 @@
 package by.server.models.entities;
 
+import by.server.models.DTO.RealizationExpensesDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,4 +38,12 @@ public class RealizationExpenses {
 
     @Column(name = "other_expenses", precision = 10, scale = 2)
     private BigDecimal otherExpenses;
+
+    public RealizationExpenses(RealizationExpensesDTO realizationExpensesDTO){
+        this.product = new Product(realizationExpensesDTO.getProduct());
+        this.marketingCost = realizationExpensesDTO.getMarketingCost();
+        this.distributionCost = realizationExpensesDTO.getDistributionCost();
+        this.transportationCost = realizationExpensesDTO.getTransportationCost();
+        this.otherExpenses = realizationExpensesDTO.getOtherExpenses();
+    }
 }

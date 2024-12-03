@@ -1,5 +1,6 @@
 package by.server.models.entities;
 
+import by.server.models.DTO.ProductionExpensesDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,6 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "production_expenses")
 public class ProductionExpenses {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "production_id")
@@ -37,4 +37,12 @@ public class ProductionExpenses {
 
     @Column(name = "other_expenses", precision = 10, scale = 2)
     private BigDecimal otherExpenses;
+
+    public ProductionExpenses(ProductionExpensesDTO productionExpensesDTO){
+        this.product = new Product(productionExpensesDTO.getProduct());
+        this.wagesCost = productionExpensesDTO.getWagesCost();
+        this.materialCost = productionExpensesDTO.getMaterialCost();
+        this.overheadCost = productionExpensesDTO.getOverheadCost();
+        this.otherExpenses = productionExpensesDTO.getOtherExpenses();
+    }
 }

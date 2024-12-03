@@ -4,10 +4,7 @@ import by.server.models.DTO.ProductDTO;
 import by.server.models.DTO.ProductionExpensesDTO;
 import by.server.models.DTO.RealizationExpensesDTO;
 import by.server.models.DTO.UserDTO;
-import by.server.models.entities.Product;
-import by.server.models.entities.RealizationExpenses;
-import by.server.models.entities.Role;
-import by.server.models.entities.User;
+import by.server.models.entities.*;
 import by.server.models.enums.ResponseStatus;
 import by.server.models.enums.Roles;
 import by.server.models.tcp.Request;
@@ -88,17 +85,22 @@ public class ClientThread implements Runnable {
                     }
                     case CALCULATE_PRODUCT_PRICE -> {
                         try {
-                            String json = gson.fromJson(request.getRequestMessage(), String.class);
-                            JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
+                            JsonObject jsonObject = JsonParser.parseString(request.getRequestMessage()).getAsJsonObject();
+                            System.out.println("Received JSON: " + jsonObject.toString());
                             JsonElement productElement = jsonObject.get("product");
                             ProductDTO productDTO = gson.fromJson(productElement, ProductDTO.class);
-//                            productService.save(new Product(productDTO));
-                            
+                            Product product = new Product(productDTO);
+                            productService.save(product);
                             JsonElement userElement = jsonObject.get("RealizationExpenses");
                             RealizationExpensesDTO realizationExpensesDTO = gson.fromJson(userElement, RealizationExpensesDTO.class);
+                            RealizationExpenses realizationExpenses = new RealizationExpenses(realizationExpensesDTO);
+                            realizationExpenses.setProduct(product);
+                            realizationExpensesService.save(realizationExpenses);
                             JsonElement orderElement = jsonObject.get("ProductionExpenses");
                             ProductionExpensesDTO productionExpensesDTO = gson.fromJson(orderElement, ProductionExpensesDTO.class);
-
+                            ProductionExpenses productionExpenses = new ProductionExpenses(productionExpensesDTO);
+                            productionExpenses.setProduct(product);
+                            productionExpensesService.save(productionExpenses);
                         } catch (Exception e){
                             response = new Response(ResponseStatus.ERROR, e.getMessage(), null);
                         }
