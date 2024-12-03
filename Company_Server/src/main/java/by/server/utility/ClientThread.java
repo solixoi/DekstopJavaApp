@@ -1,17 +1,22 @@
 package by.server.utility;
 
+import by.server.models.DTO.ProductDTO;
+import by.server.models.DTO.ProductionExpensesDTO;
+import by.server.models.DTO.RealizationExpensesDTO;
 import by.server.models.DTO.UserDTO;
+import by.server.models.entities.Product;
+import by.server.models.entities.RealizationExpenses;
 import by.server.models.entities.Role;
 import by.server.models.entities.User;
 import by.server.models.enums.ResponseStatus;
 import by.server.models.enums.Roles;
 import by.server.models.tcp.Request;
 import by.server.models.tcp.Response;
+import by.server.service.ProductService;
+import by.server.service.ProductionExpensesService;
+import by.server.service.RealizationExpensesService;
 import by.server.service.UserService;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,6 +32,9 @@ public class ClientThread implements Runnable {
     private BufferedReader in;
     private PrintWriter out;
     private UserService userService = new UserService();
+    private ProductService productService = new ProductService();
+    private RealizationExpensesService realizationExpensesService =  new RealizationExpensesService();
+    private ProductionExpensesService productionExpensesService = new ProductionExpensesService();
 
     private Request request;
     private Response response;
@@ -55,9 +63,9 @@ public class ClientThread implements Runnable {
 
                 switch (request.getRequestType()){
                     case REGISTER -> {
-                        UserDTO user = gson.fromJson(request.getRequestMessage(), UserDTO.class);
-                        user.setRole(Roles.USER);
                         try {
+                            UserDTO user = gson.fromJson(request.getRequestMessage(), UserDTO.class);
+                            user.setRole(Roles.USER);
                             userService.save(new User(user));
                             response = new Response(ResponseStatus.OK, "Register", "");;
                         } catch (Exception e) {
@@ -68,18 +76,30 @@ public class ClientThread implements Runnable {
                     case LOGIN -> {
                         try {
                             UserDTO userDTO = gson.fromJson(request.getRequestMessage(), UserDTO.class);
-                            User user = new User(userDTO);
-                            User returnUser = userService.findByUsernameOrEmailOrPassword(user.getUsername() == null ? user.getEmail() : user.getUsername(), user.getPassword());
+                            User user = userService.findByUsernameOrEmailOrPassword(userDTO.getUsername() == null ? userDTO.getEmail() : userDTO.getUsername(), userDTO.getPassword());
                             response = new Response();
-                            Map<String, Object> responseData = new HashMap<>();
-                            responseData.put("roles", returnUser.getRole().getRole());
-                            returnUser.setLogs(null);
-                            returnUser.setProducts(null);
-                            returnUser.setRole(null);
-                            responseData.put("user", returnUser);
-                            response = new Response(ResponseStatus.OK, "Login successfully!", gson.toJson(responseData));
+                            UserDTO returnUser = new UserDTO(user);
+                            response = new Response(ResponseStatus.OK, "Login successfully!", gson.toJson(returnUser));
                             System.out.println(response);
                         } catch (Exception e) {
+                            response = new Response(ResponseStatus.ERROR, e.getMessage(), null);
+                        }
+                        break;
+                    }
+                    case CALCULATE_PRODUCT_PRICE -> {
+                        try {
+                            String json = gson.fromJson(request.getRequestMessage(), String.class);
+                            JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
+                            JsonElement productElement = jsonObject.get("product");
+                            ProductDTO productDTO = gson.fromJson(productElement, ProductDTO.class);
+//                            productService.save(new Product(productDTO));
+                            
+                            JsonElement userElement = jsonObject.get("RealizationExpenses");
+                            RealizationExpensesDTO realizationExpensesDTO = gson.fromJson(userElement, RealizationExpensesDTO.class);
+                            JsonElement orderElement = jsonObject.get("ProductionExpenses");
+                            ProductionExpensesDTO productionExpensesDTO = gson.fromJson(orderElement, ProductionExpensesDTO.class);
+
+                        } catch (Exception e){
                             response = new Response(ResponseStatus.ERROR, e.getMessage(), null);
                         }
                         break;

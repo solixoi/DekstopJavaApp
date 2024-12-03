@@ -1,5 +1,6 @@
 package by.server.models.DTO;
 
+import by.server.models.entities.User;
 import by.server.models.enums.Roles;
 import lombok.*;
 
@@ -11,6 +12,17 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
+
+    public UserDTO(User user) {
+        this.password = user.getPassword();
+        this.email = user.getEmail();
+        this.username = user.getUsername();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.dataCreation = user.getDateCreation();
+        this.role = user.getRole().getRole();
+    }
+
     private long id;
     private String password;
     private String username;

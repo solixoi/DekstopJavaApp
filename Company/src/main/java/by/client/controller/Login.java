@@ -45,19 +45,13 @@ public class Login {
         request.setRequestMessage(new Gson().toJson(user));
         ClientSocket.getInstance().getOut().println(new Gson().toJson(request));
         String answer = ClientSocket.getInstance().getIn().readLine();
-        System.out.println(answer);
         if (answer != null) {
             Response response = new Gson().fromJson(answer, Response.class);
             if ( response.getStatus() != ResponseStatus.ERROR && response.getResponseData() != null) {
-                JsonObject responseData = JsonParser.parseString(response.getResponseData()).getAsJsonObject();
-                String roleString = responseData.get("roles").getAsString();
-                Roles role = Roles.valueOf(roleString);
-                JsonObject userJson = responseData.getAsJsonObject("user");
-                User userData = new Gson().fromJson(userJson, User.class);
-                userData.setRole(role);
+                User responseUser = new Gson().fromJson(response.getResponseData(), User.class);
                 if (response.getStatus() == ResponseStatus.OK) {
-                    labelMessage.setText("Успешный вход! " + userData.getUsername() + ";Ваша роль: " + userData.getRole());
-                    ClientSocket.getInstance().setUser(userData);
+                    labelMessage.setText("Успешный вход! " + responseUser.getUsername() + ";Ваша роль: " + responseUser.getRole());
+                    ClientSocket.getInstance().setUser(responseUser);
                     labelMessage.setVisible(true);
                 } else {
                     labelMessage.setText(response.getMessage());
