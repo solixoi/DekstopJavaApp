@@ -26,14 +26,17 @@ public class Product {
     @Column(name = "product_name", length = 150)
     private String productName;
 
-    @Column(name = "cost_price", precision = 10, scale = 2)
-    private BigDecimal costPrice;
+    @Column(name = "cost_price", precision = 10, scale = 2, nullable = false)
+    private BigDecimal costPrice = BigDecimal.ZERO;
 
-    @Column(name = "planned_price", precision = 10, scale = 2)
-    private BigDecimal plannedPrice;
+    @Column(name = "planned_revenue", precision = 10, scale = 2)
+    private BigDecimal plannedRevenue;
 
     @Column(name = "final_price", precision = 10, scale = 2)
     private BigDecimal finalPrice;
+
+    @Column(name = "markup", precision = 10, scale = 2)
+    private BigDecimal markup;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
