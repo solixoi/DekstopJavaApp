@@ -2,9 +2,6 @@ package by.server.service;
 
 import by.server.models.entities.User;
 import by.server.repositories.UserRepository;
-import lombok.SneakyThrows;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 public class UserService {
 

@@ -13,7 +13,7 @@ public class GenericRepository<T, ID> {
         this.entityType = entityType;
     }
 
-    public boolean save(T entity) {
+    public void save(T entity) {
         EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction transaction = em.getTransaction();
         try {
@@ -23,11 +23,9 @@ public class GenericRepository<T, ID> {
         } catch (Exception e) {
             transaction.rollback();
             System.out.println(e.getMessage());
-            return false;
         } finally {
             em.close();
         }
-        return true;
     }
 
     public T findById(ID id) {

@@ -35,4 +35,13 @@ public class PriceHistory {
 
     @Column(name = "change_date")
     private Timestamp changeDate;
+
+    @PrePersist
+    protected void onCreate() {
+        if (changeDate == null) {
+            long currentTimeInSeconds = System.currentTimeMillis() / 1000 * 1000;
+            changeDate = new Timestamp(currentTimeInSeconds);
+        }
+    }
+
 }

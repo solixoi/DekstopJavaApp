@@ -1,5 +1,7 @@
 package by.server.models.entities;
 
+import by.server.models.DTO.UserDTO;
+import by.server.models.enums.Roles;
 import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,6 +40,15 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
+    }
+
+    public User(UserDTO userDTO) {
+        this.username = userDTO.getUsername();
+        this.password = userDTO.getPassword();
+        this.email = userDTO.getEmail();
+        this.firstName = userDTO.getFirstName();
+        this.lastName = userDTO.getLastName();
+        this.role = new Role(this, userDTO.getRole());
     }
 
     @PrePersist

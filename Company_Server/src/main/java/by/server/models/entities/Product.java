@@ -1,5 +1,6 @@
 package by.server.models.entities;
 
+import by.server.models.DTO.ProductDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,14 @@ import java.util.List;
 @Table(name = "products")
 public class Product {
 
+    public Product(ProductDTO productDTO){
+        this.productName = productDTO.getProductName();
+        this.costPrice = productDTO.getCostPrice();
+        this.plannedRevenue = productDTO.getPlannedRevenue();
+        this.finalPrice = productDTO.getFinalPrice();
+        this.markup = productDTO.getMarkup();
+        this.createdBy = new User(productDTO.getCreatedBy());
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
@@ -26,14 +35,17 @@ public class Product {
     @Column(name = "product_name", length = 150)
     private String productName;
 
-    @Column(name = "cost_price", precision = 10, scale = 2)
-    private BigDecimal costPrice;
+    @Column(name = "cost_price", precision = 10, scale = 2, nullable = false)
+    private BigDecimal costPrice = BigDecimal.ZERO;
 
-    @Column(name = "planned_price", precision = 10, scale = 2)
-    private BigDecimal plannedPrice;
+    @Column(name = "planned_revenue", precision = 10, scale = 2)
+    private BigDecimal plannedRevenue;
 
     @Column(name = "final_price", precision = 10, scale = 2)
     private BigDecimal finalPrice;
+
+    @Column(name = "markup", precision = 10, scale = 2)
+    private BigDecimal markup;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
