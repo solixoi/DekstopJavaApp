@@ -25,4 +25,12 @@ public class UserService {
         }
         return isUser;
     }
+
+    public User findById(long id) {
+        User user = userRepo.findById(id);
+        if(user == null){
+            throw new RuntimeException("User not found");
+        }
+        return user;
+    }
 }

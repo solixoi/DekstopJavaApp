@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
@@ -90,11 +91,22 @@ public class ClientThread implements Runnable {
                             JsonObject jsonObject = JsonParser.parseString(request.getRequestMessage()).getAsJsonObject();
                             JsonElement productElement = jsonObject.get("product");
                             ProductDTO productDTO = gson.fromJson(productElement, ProductDTO.class);
-                            productDTO.setCreatedBy(null);
+                            User user = userService.findById(productDTO.getCreatedBy().getId());
                             System.out.println(productDTO);
                             Product product = new Product(productDTO);
+                            product.setCreatedBy(user);
                             productService.save(product);
-
+                            JsonElement realizationExpensesJSON = jsonObject.get("RealizationExpenses");
+                            RealizationExpensesDTO realizationExpensesDTO = gson.fromJson(realizationExpensesJSON, RealizationExpensesDTO.class);
+                            RealizationExpenses realizationExpenses = new RealizationExpenses(realizationExpensesDTO);
+                            realizationExpenses.setProduct(productService.findById(product.getProductId()));
+                            realizationExpensesService.save(realizationExpenses);
+                            JsonElement productionExpensesJSON = jsonObject.get("ProductionExpenses");
+                            ProductionExpensesDTO productionExpensesDTO = gson.fromJson(productionExpensesJSON, ProductionExpensesDTO.class);
+                            ProductionExpenses productionExpenses = new ProductionExpenses(productionExpensesDTO);
+                            productionExpenses.setProduct(productService.findById(product.getProductId()));
+                            productionExpensesService.save(productionExpenses);
+                            productService.calculateTotalPrice(product.getProductId());
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
                             response = new Response(ResponseStatus.ERROR, e.getMessage(), null);

@@ -19,4 +19,12 @@ public class ProductService {
         }
         return product;
     }
+
+    public Product findById(long productId) {
+        Product product = productRepo.findById(productId);
+        if (product == null) {
+            throw new RuntimeException("Don't find product with id!");
+        }
+        return product;
+    }
 }

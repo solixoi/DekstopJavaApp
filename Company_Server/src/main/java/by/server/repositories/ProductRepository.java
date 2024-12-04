@@ -35,6 +35,7 @@ public class ProductRepository extends GenericRepository<Product, Long> {
 
             em.merge(product);
             result = product;
+            transaction.commit();
         }catch (Exception e) {
             transaction.rollback();
             System.out.println(e.getMessage());
