@@ -14,6 +14,8 @@ import by.server.service.ProductionExpensesService;
 import by.server.service.RealizationExpensesService;
 import by.server.service.UserService;
 import com.google.gson.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -86,22 +88,15 @@ public class ClientThread implements Runnable {
                     case CALCULATE_PRODUCT_PRICE -> {
                         try {
                             JsonObject jsonObject = JsonParser.parseString(request.getRequestMessage()).getAsJsonObject();
-                            System.out.println("Received JSON: " + jsonObject.toString());
                             JsonElement productElement = jsonObject.get("product");
                             ProductDTO productDTO = gson.fromJson(productElement, ProductDTO.class);
+                            productDTO.setCreatedBy(null);
+                            System.out.println(productDTO);
                             Product product = new Product(productDTO);
                             productService.save(product);
-                            JsonElement userElement = jsonObject.get("RealizationExpenses");
-                            RealizationExpensesDTO realizationExpensesDTO = gson.fromJson(userElement, RealizationExpensesDTO.class);
-                            RealizationExpenses realizationExpenses = new RealizationExpenses(realizationExpensesDTO);
-                            realizationExpenses.setProduct(product);
-                            realizationExpensesService.save(realizationExpenses);
-                            JsonElement orderElement = jsonObject.get("ProductionExpenses");
-                            ProductionExpensesDTO productionExpensesDTO = gson.fromJson(orderElement, ProductionExpensesDTO.class);
-                            ProductionExpenses productionExpenses = new ProductionExpenses(productionExpensesDTO);
-                            productionExpenses.setProduct(product);
-                            productionExpensesService.save(productionExpenses);
-                        } catch (Exception e){
+
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
                             response = new Response(ResponseStatus.ERROR, e.getMessage(), null);
                         }
                         break;

@@ -25,7 +25,6 @@ public class Product {
         this.plannedRevenue = productDTO.getPlannedRevenue();
         this.finalPrice = productDTO.getFinalPrice();
         this.markup = productDTO.getMarkup();
-        this.createdBy = new User(productDTO.getCreatedBy());
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +34,7 @@ public class Product {
     @Column(name = "product_name", length = 150)
     private String productName;
 
-    @Column(name = "cost_price", precision = 10, scale = 2, nullable = false)
+    @Column(name = "cost_price", precision = 10, scale = 2)
     private BigDecimal costPrice = BigDecimal.ZERO;
 
     @Column(name = "planned_revenue", precision = 10, scale = 2)
@@ -51,12 +50,12 @@ public class Product {
     @JoinColumn(name = "created_by")
     private User createdBy;
 
-    @OneToOne(mappedBy = "product")
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private ProductionExpenses productionExpenses;
 
-    @OneToOne(mappedBy = "product")
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private RealizationExpenses realizationExpenses;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PriceHistory> priceHistory;
 }

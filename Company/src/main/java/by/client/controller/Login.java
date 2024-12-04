@@ -82,13 +82,13 @@ public class Login {
         user.setId(1L);
         Product product = new Product("name1", BigDecimal.valueOf(100L), BigDecimal.valueOf(100L),
                 BigDecimal.valueOf(100L), BigDecimal.valueOf(100L), user);
-        RealizationExpenses realizationExpenses = new RealizationExpenses(product, BigDecimal.valueOf(100L), BigDecimal.valueOf(100L),
-                BigDecimal.valueOf(100L), BigDecimal.valueOf(100L));
-        ProductionExpenses productionExpenses = new ProductionExpenses(product, BigDecimal.valueOf(100L), BigDecimal.valueOf(100L),
-                BigDecimal.valueOf(100L), BigDecimal.valueOf(100L));
+//        RealizationExpenses realizationExpenses = new RealizationExpenses(product, BigDecimal.valueOf(100L), BigDecimal.valueOf(100L),
+//                BigDecimal.valueOf(100L), BigDecimal.valueOf(100L));
+//        ProductionExpenses productionExpenses = new ProductionExpenses(product, BigDecimal.valueOf(100L), BigDecimal.valueOf(100L),
+//                BigDecimal.valueOf(100L), BigDecimal.valueOf(100L));
         jsonObject.add("product", gson.toJsonTree(product));
-        jsonObject.add("RealizationExpenses", gson.toJsonTree(realizationExpenses));
-        jsonObject.add("ProductionExpenses", gson.toJsonTree(productionExpenses));
+//        jsonObject.add("RealizationExpenses", gson.toJsonTree(realizationExpenses));
+//        jsonObject.add("ProductionExpenses", gson.toJsonTree(productionExpenses));
         request.setRequestMessage(jsonObject.toString());
         ClientSocket.getInstance().getOut().println(new Gson().toJson(request));
         String answer = ClientSocket.getInstance().getIn().readLine();
