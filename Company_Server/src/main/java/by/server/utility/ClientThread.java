@@ -64,9 +64,9 @@ public class ClientThread implements Runnable {
                 switch (request.getRequestType()){
                     case REGISTER -> {
                         try {
-                            UserDTO user = gson.fromJson(request.getRequestMessage(), UserDTO.class);
-                            user.setRole(Roles.USER);
-                            userService.save(new User(user));
+                            User user = gson.fromJson(request.getRequestMessage(), User.class);
+                            user.setRole(new Role(user, Roles.USER));
+                            userService.save(user);
                             response = new Response(ResponseStatus.OK, "Register", "");;
                         } catch (Exception e) {
                             response = new Response(ResponseStatus.ERROR, e.getMessage(), "");
@@ -75,8 +75,8 @@ public class ClientThread implements Runnable {
                     }
                     case LOGIN -> {
                         try {
-                            UserDTO userDTO = gson.fromJson(request.getRequestMessage(), UserDTO.class);
-                            User user = userService.findByUsernameOrEmailOrPassword(userDTO.getUsername() == null ? userDTO.getEmail() : userDTO.getUsername(), userDTO.getPassword());
+                            User user = gson.fromJson(request.getRequestMessage(), User.class);
+                            user = userService.findByUsernameOrEmailOrPassword(user.getUsername() == null ? user.getEmail() : user.getUsername(), user.getPassword());
                             response = new Response();
                             UserDTO returnUser = new UserDTO(user);
                             response = new Response(ResponseStatus.OK, "Login successfully!", gson.toJson(returnUser));
@@ -90,20 +90,16 @@ public class ClientThread implements Runnable {
                         try {
                             JsonObject jsonObject = JsonParser.parseString(request.getRequestMessage()).getAsJsonObject();
                             JsonElement productElement = jsonObject.get("product");
-                            ProductDTO productDTO = gson.fromJson(productElement, ProductDTO.class);
-                            User user = userService.findById(productDTO.getCreatedBy().getId());
-                            System.out.println(productDTO);
-                            Product product = new Product(productDTO);
+                            Product product = gson.fromJson(productElement, Product.class);
+                            User user = userService.findById(product.getCreatedBy().getUserId());
                             product.setCreatedBy(user);
                             productService.save(product);
                             JsonElement realizationExpensesJSON = jsonObject.get("RealizationExpenses");
-                            RealizationExpensesDTO realizationExpensesDTO = gson.fromJson(realizationExpensesJSON, RealizationExpensesDTO.class);
-                            RealizationExpenses realizationExpenses = new RealizationExpenses(realizationExpensesDTO);
+                            RealizationExpenses realizationExpenses = gson.fromJson(realizationExpensesJSON, RealizationExpenses.class);
                             realizationExpenses.setProduct(productService.findById(product.getProductId()));
                             realizationExpensesService.save(realizationExpenses);
                             JsonElement productionExpensesJSON = jsonObject.get("ProductionExpenses");
-                            ProductionExpensesDTO productionExpensesDTO = gson.fromJson(productionExpensesJSON, ProductionExpensesDTO.class);
-                            ProductionExpenses productionExpenses = new ProductionExpenses(productionExpensesDTO);
+                            ProductionExpenses productionExpenses = gson.fromJson(productionExpensesJSON, ProductionExpenses.class);
                             productionExpenses.setProduct(productService.findById(product.getProductId()));
                             productionExpensesService.save(productionExpenses);
                             productService.calculateTotalPrice(product.getProductId());
