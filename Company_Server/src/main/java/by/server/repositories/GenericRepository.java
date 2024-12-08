@@ -28,6 +28,21 @@ public class GenericRepository<T, ID> {
         }
     }
 
+    public void update(T entity) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            em.merge(entity);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            System.out.println(e.getMessage());
+        } finally {
+            em.close();
+        }
+    }
+
     public T findById(ID id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {

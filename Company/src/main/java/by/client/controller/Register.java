@@ -56,6 +56,7 @@ public class Register {
         user.setPassword(passwordfieldPassword.getText());
         request.setRequestMessage(new Gson().toJson(user));
         request.setRequestType(RequestType.REGISTER);
+        System.out.println(user);
         ClientSocket.getInstance().getOut().println(new Gson().toJson(request));
         String answer = ClientSocket.getInstance().getIn().readLine();
         Response response = new Gson().fromJson(answer, Response.class);

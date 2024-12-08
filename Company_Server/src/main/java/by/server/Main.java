@@ -1,7 +1,10 @@
 package by.server;
 
+import by.server.models.entities.Product;
 import by.server.utility.ClientThread;
 import by.server.utility.JPAUtil;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -10,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Main {
+public class    Main {
     private static final int PORT = 6666;
     private static ServerSocket serverSocket;
     private static ClientThread clientThread;

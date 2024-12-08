@@ -23,7 +23,7 @@ public class RealizationExpenses {
     @Column(name = "realization_id")
     private Long realizationId;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private Product product;
 
@@ -39,11 +39,4 @@ public class RealizationExpenses {
     @Column(name = "other_expenses", precision = 10, scale = 2)
     private BigDecimal otherExpenses;
 
-    public RealizationExpenses(RealizationExpensesDTO realizationExpensesDTO){
-        this.product = new Product(realizationExpensesDTO.getProduct());
-        this.marketingCost = realizationExpensesDTO.getMarketingCost();
-        this.distributionCost = realizationExpensesDTO.getDistributionCost();
-        this.transportationCost = realizationExpensesDTO.getTransportationCost();
-        this.otherExpenses = realizationExpensesDTO.getOtherExpenses();
-    }
 }

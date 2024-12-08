@@ -1,10 +1,7 @@
 package by.server.models.entities;
 
 import by.server.models.DTO.ProductDTO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import jakarta.persistence.*;
 
@@ -19,13 +16,6 @@ import java.util.List;
 @Table(name = "products")
 public class Product {
 
-    public Product(ProductDTO productDTO){
-        this.productName = productDTO.getProductName();
-        this.costPrice = productDTO.getCostPrice();
-        this.plannedRevenue = productDTO.getPlannedRevenue();
-        this.finalPrice = productDTO.getFinalPrice();
-        this.markup = productDTO.getMarkup();
-    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
@@ -58,4 +48,9 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PriceHistory> priceHistory;
+
+    @Override
+    public String toString() {
+        return "id: " + productId + " " +  productName;
+    }
 }

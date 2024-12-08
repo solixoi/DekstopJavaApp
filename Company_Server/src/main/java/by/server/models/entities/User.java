@@ -9,7 +9,6 @@ import lombok.*;
 import java.sql.Timestamp;
 import java.util.List;
 
-@Data
 @Getter
 @Setter
 @NoArgsConstructor
@@ -42,15 +41,6 @@ public class User {
         this.role = role;
     }
 
-    public User(UserDTO userDTO) {
-        this.username = userDTO.getUsername();
-        this.password = userDTO.getPassword();
-        this.email = userDTO.getEmail();
-        this.firstName = userDTO.getFirstName();
-        this.lastName = userDTO.getLastName();
-        this.role = new Role(this, userDTO.getRole());
-    }
-
     @PrePersist
     protected void onCreate() {
         if (dateCreation == null) {
@@ -71,9 +61,13 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Role role;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Ban ban;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Log> logs;
 
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.EAGER)
     private List<Product> products;
+
 }

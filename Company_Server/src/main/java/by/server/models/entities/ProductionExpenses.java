@@ -22,7 +22,7 @@ public class ProductionExpenses {
     @Column(name = "production_id")
     private Long productionId;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private Product product;
 
@@ -38,11 +38,4 @@ public class ProductionExpenses {
     @Column(name = "other_expenses", precision = 10, scale = 2)
     private BigDecimal otherExpenses;
 
-    public ProductionExpenses(ProductionExpensesDTO productionExpensesDTO){
-        this.product = new Product(productionExpensesDTO.getProduct());
-        this.wagesCost = productionExpensesDTO.getWagesCost();
-        this.materialCost = productionExpensesDTO.getMaterialCost();
-        this.overheadCost = productionExpensesDTO.getOverheadCost();
-        this.otherExpenses = productionExpensesDTO.getOtherExpenses();
-    }
 }

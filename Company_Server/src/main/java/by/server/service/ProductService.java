@@ -4,11 +4,23 @@ import by.server.models.entities.Product;
 import by.server.models.entities.RealizationExpenses;
 import by.server.repositories.ProductRepository;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+
 public class ProductService {
-    private ProductRepository productRepo = new ProductRepository();
+    private final ProductRepository productRepo = new ProductRepository();
 
     public void save(Product product) {
         productRepo.save(product);
+    }
+
+    public void update(Product product) {
+        productRepo.update(product);
+    }
+
+    public void delete(Product product) {
+        productRepo.delete(product);
     }
 
     public Product calculateTotalPrice(long productId) {
@@ -26,5 +38,9 @@ public class ProductService {
             throw new RuntimeException("Don't find product with id!");
         }
         return product;
+    }
+
+    public List<Product> findAll() {
+        return productRepo.findAll();
     }
 }

@@ -1,5 +1,6 @@
 package by.server.models.DTO;
 
+import by.server.models.entities.PriceHistory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,4 +18,11 @@ public class PriceHistoryDTO {
     private BigDecimal oldPrice;
     private BigDecimal newPrice;
     private Timestamp changeDate;
+
+    public PriceHistoryDTO(PriceHistory priceHistory) {
+        this.product = new ProductDTO(priceHistory.getProduct());
+        this.oldPrice = priceHistory.getOldPrice();
+        this.newPrice = priceHistory.getNewPrice();
+        this.changeDate = priceHistory.getChangeDate();
+    }
 }

@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    private long id;
+    private Long userId;
     private String password;
     private String username;
     private Timestamp dateCreation;

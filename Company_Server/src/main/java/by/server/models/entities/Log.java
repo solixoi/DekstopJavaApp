@@ -20,10 +20,15 @@ public class Log {
     @Column(name = "logs_id")
     private Long logsId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(name = "action", nullable = false, length = 300)
     private String action;
+
+    public Log(User user, String action) {
+        this.user = user;
+        this.action = action;
+    }
 }

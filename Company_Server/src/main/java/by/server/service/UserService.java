@@ -1,11 +1,14 @@
 package by.server.service;
 
+import by.server.models.entities.Product;
 import by.server.models.entities.User;
 import by.server.repositories.UserRepository;
 
+import java.util.List;
+
 public class UserService {
 
-    private UserRepository userRepo = new UserRepository();
+    private final UserRepository userRepo = new UserRepository();
 
     public void save(User user) {
         if (userRepo.findByEmail(user.getEmail()) != null){
@@ -17,9 +20,16 @@ public class UserService {
         userRepo.save(user);
     }
 
+    public void update(User user) {
+        userRepo.update(user);
+    }
+
+    public void delete(User user) {
+        userRepo.delete(user);
+    }
+
     public User findByUsernameOrEmailOrPassword(String usernameOrEmail, String password) {
         User isUser = userRepo.findByUsernameOrEmailWithPassword(usernameOrEmail, password);
-        System.out.println(isUser);
         if(isUser == null){
             throw new RuntimeException("Invalid username or password");
         }
@@ -32,5 +42,9 @@ public class UserService {
             throw new RuntimeException("User not found");
         }
         return user;
+    }
+
+    public List<User> findAll() {
+        return userRepo.findAll();
     }
 }
