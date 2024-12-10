@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.CustomMenuItem?>
+
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.client.controller.MainPageController" stylesheets="@/style/login.css">
+    <top>
+        <HBox spacing="20" alignment="CENTER_LEFT" styleClass="header">
+            <MenuBar styleClass="menu-bar">
+                <menus>
+                    <Menu text="Рассчитать стоимость изделия" onAction="#calculateCost"/>
+                    <Menu text="Просмотреть все изделия" onAction="#viewAllItems"/>
+                    <Menu text="Админ панель" fx:id="adminMenu" visible="false" onAction="#adminFunctionality"/>
+                    <Menu text="Аналитика" fx:id="managerMenu" visible="false" onAction="#managerFunctionality"/>
+                </menus>
+            </MenuBar>
+            <MenuBar styleClass="user-menu-bar">
+                <menus>
+                    <Menu fx:id="userMenu">
+                        <graphic>
+                            <Label fx:id="usernameLabel" onMouseClicked="#showUserMenu"/>
+                        </graphic>
+                        <items>
+                            <MenuItem text="Профиль" onAction="#viewProfile"/>
+                            <MenuItem text="Выйти" onAction="#logout"/>
+                        </items>
+                    </Menu>
+                </menus>
+            </MenuBar>
+        </HBox>
+    </top>
+    <center>
+        <VBox alignment="CENTER" spacing="20">
+            <Label text="Введите все затраты для расчета стоимости изделия:" styleClass="welcome-label"/>
+            <HBox spacing="20" alignment="CENTER">
+                <VBox spacing="10" alignment="CENTER">
+                    <Label text="Информация о продукте" styleClass="section-header"/>
+                    <GridPane hgap="10" vgap="10" alignment="CENTER">
+                        <Label text="Название продукта:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <TextField fx:id="productNameField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                        <Label text="Планируемая выручка:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <TextField fx:id="plannedRevenueField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    </GridPane>
+                </VBox>
+                <VBox spacing="10" alignment="CENTER">
+                    <Label text="Производственные затраты" styleClass="section-header"/>
+                    <GridPane hgap="10" vgap="10" alignment="CENTER">
+                        <Label text="Затраты на зарплаты:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <TextField fx:id="wagesCostField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                        <Label text="Затраты на материалы:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <TextField fx:id="materialCostField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                        <Label text="Накладные расходы:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <TextField fx:id="overheadCostField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                        <Label text="Другие расходы:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                        <TextField fx:id="otherExpensesProductionField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    </GridPane>
+                </VBox>
+                <VBox spacing="10" alignment="CENTER">
+                    <Label text="Реализационные расходы" styleClass="section-header"/>
+                    <GridPane hgap="10" vgap="10" alignment="CENTER">
+                        <Label text="Затраты на маркетинг:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <TextField fx:id="marketingCostField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                        <Label text="Затраты на дистрибуцию:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <TextField fx:id="distributionCostField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                        <Label text="Затраты на транспортировку:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <TextField fx:id="transportationCostField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                        <Label text="Другие расходы:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                        <TextField fx:id="otherExpensesRealizationField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    </GridPane>
+                </VBox>
+            </HBox>
+            <Button text="Отправить" onAction="#submitExpenses" styleClass="start-button"/>
+        </VBox>
+    </center>
+</BorderPane>
