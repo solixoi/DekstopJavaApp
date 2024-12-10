@@ -124,20 +124,22 @@ public class ClientThread implements Runnable {
                             priceHistory.setOldPrice(product.getFinalPrice());
                             ProductionExpenses productionExpenses = null;
                             RealizationExpenses realizationExpenses = null;
-                            User user = userService.findById(product.getCreatedBy().getUserId());
-                            product.setCreatedBy(user);
+                            JsonElement userJSON = jsonObject.get("user");
+                            User user = gson.fromJson(userJSON, User.class);
                             productService.update(product);
                             JsonElement realizationExpensesJSON = jsonObject.get("RealizationExpenses");
                             if(!realizationExpensesJSON.isJsonNull()){
                                 realizationExpenses = gson.fromJson(realizationExpensesJSON, RealizationExpenses.class);
-                                realizationExpenses.setProduct(productService.findById(realizationExpenses.getProduct().getProductId()));
+                                realizationExpenses.setRealizationId(realizationExpensesService.findProductId(product.getProductId()));
+                                realizationExpenses.setProduct(productService.findById(product.getProductId()));
                                 realizationExpensesService.update(realizationExpenses);
 
                             }
                             JsonElement productionExpensesJSON = jsonObject.get("ProductionExpenses");
                             if(!productionExpensesJSON.isJsonNull()){
                                 productionExpenses = gson.fromJson(productionExpensesJSON, ProductionExpenses.class);
-                                productionExpenses.setProduct(productService.findById(productionExpenses.getProduct().getProductId()));
+                                productionExpenses.setProductionId(productionExpensesService.findProductId(product.getProductId()));
+                                productionExpenses.setProduct(productService.findById(product.getProductId()));
                                 productionExpensesService.update(productionExpenses);
                             }
                             product = productService.calculateTotalPrice(product.getProductId());
@@ -147,7 +149,7 @@ public class ClientThread implements Runnable {
                             returnObject.add("product", gson.toJsonTree(product));
                             returnObject.add("RealizationExpenses", gson.toJsonTree(realizationExpenses));
                             returnObject.add("ProductionExpenses", gson.toJsonTree(productionExpenses));
-                            logService.save(user, RequestType.UPDATE_USER_PRODUCT.toString());
+                            logService.save(userService.findById(user.getUserId()), RequestType.UPDATE_USER_PRODUCT.toString());
                             response = new Response(ResponseStatus.OK, "Update successfully!", gson.toJson(returnObject));
                         } catch (Exception e){
                             System.out.println(e.getMessage());

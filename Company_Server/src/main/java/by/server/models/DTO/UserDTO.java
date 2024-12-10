@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 public class UserDTO {
 
     public UserDTO(User user) {
-        this.id = user.getUserId();
+        this.userId = user.getUserId();
         this.password = user.getPassword();
         this.email = user.getEmail();
         this.username = user.getUsername();
@@ -24,7 +24,7 @@ public class UserDTO {
         this.role = user.getRole().getRole();
     }
 
-    private Long id;
+    private Long userId;
     private String password;
     private String username;
     private Timestamp dataCreation;

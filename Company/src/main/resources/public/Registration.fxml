@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.StackPane?>
+
+<StackPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.client.controller.RegisterController" stylesheets="@/style/register.css" styleClass="stack-pane">
+    <children>
+        <StackPane fx:id="backgroundLayer" styleClass="background-layer"></StackPane>
+
+        <GridPane fx:id="formContainer" alignment="CENTER" hgap="10" vgap="10" styleClass="form-container">
+            <children>
+                <Label text="Регистрация пользователя" styleClass="label" GridPane.halignment="CENTER"  GridPane.columnSpan="2" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+
+                <Label text="Имя:" styleClass="label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                <TextField fx:id="textfieldFirstName" styleClass="text-field" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+                <Label text="Фамилия:" styleClass="label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                <TextField fx:id="textfieldLastName" styleClass="text-field" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+                <Label text="Логин:" styleClass="label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                <TextField fx:id="textfieldUsername" styleClass="text-field" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+
+                <Label text="Почта:" styleClass="label" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+                <TextField fx:id="textfieldEmail" styleClass="text-field" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+
+                <Label text="Пароль:" styleClass="label" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+                <PasswordField fx:id="passwordfieldPassword" styleClass="password-field" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+
+                <Label text="Подтвердите пароль:" styleClass="label" GridPane.rowIndex="6" GridPane.columnIndex="0" />
+                <PasswordField fx:id="passwordfieldPasswordEquals" styleClass="password-field" GridPane.rowIndex="6" GridPane.columnIndex="1" />
+
+                <Button fx:id="butgitonRester" text="Зарегистрироваться" styleClass="button" onAction="#onRegisterButtonClicked" GridPane.rowIndex="7" GridPane.columnIndex="0" />
+                <Button fx:id="buttonCancel" text="Войти" styleClass="button" onAction="#onLoginButtonClicked" GridPane.rowIndex="7" GridPane.columnIndex="1" />
+            </children>
+        </GridPane>
+        <Label fx:id="labelMessage" styleClass="notification" StackPane.alignment="TOP_RIGHT" />
+    </children>
+</StackPane>

@@ -7,17 +7,22 @@ import by.client.models.tcp.Request;
 import by.client.models.tcp.Response;
 import by.client.utility.ClientSocket;
 import com.google.gson.Gson;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.BoxBlur;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 
-public class Register {
+public class RegisterController {
     @FXML
     private TextField textfieldFirstName;
     @FXML
@@ -34,10 +39,18 @@ public class Register {
     private PasswordField passwordfieldPasswordEquals;
     @FXML
     private Label labelMessage;
+    @FXML
+    private Label labelMessage1;
+    @FXML
+    private GridPane formContainer;
 
     @FXML
     public void initialize() {
-        System.out.println("Controller initialized!");
+        BoxBlur blur = new BoxBlur();
+        blur.setWidth(50);
+        blur.setHeight(50);
+        blur.setIterations(20);
+        formContainer.setEffect(blur);
     }
 
     @FXML
@@ -45,8 +58,7 @@ public class Register {
         Request request = new Request();
         User user = new User();
         if (!passwordfieldPassword.getText().equals(passwordfieldPasswordEquals.getText())) {
-            labelMessage.setText("Пароли не совпадают");
-            labelMessage.setVisible(true);
+            showMessage("Пароли не совпадают", "error");
             return;
         }
         user.setFirstName(textfieldFirstName.getText());
@@ -61,20 +73,34 @@ public class Register {
         String answer = ClientSocket.getInstance().getIn().readLine();
         Response response = new Gson().fromJson(answer, Response.class);
         if (response.getStatus() == ResponseStatus.OK) {
-            labelMessage.setText("Successfully registered!");
-            labelMessage.setVisible(true);
+            showMessage("Successfully registered!", "success");
         } else {
-            labelMessage.setText(response.getMessage());
-            labelMessage.setVisible(true);
+            showMessage(response.getMessage(), "error");
         }
     }
 
     @FXML
     public void onLoginButtonClicked(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/public/Login.fxml"));
         Parent root = loader.load();
-        Stage stage = (Stage) buttonCancel.getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        Stage newStage = new Stage();
+        newStage.setScene(new Scene(root));
+        newStage.setMaximized(true);
+        newStage.show();
+        Stage currentStage = (Stage) buttonCancel.getScene().getWindow();
+        currentStage.close();
+    }
+
+    private void showMessage(String message, String type) {
+        labelMessage.setText(message);
+        labelMessage.getStyleClass().removeAll("success", "error");
+        labelMessage.getStyleClass().add(type);
+        labelMessage.setVisible(true);
+
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.seconds(3),
+                event -> labelMessage.setVisible(false)
+        ));
+        timeline.play();
     }
 }

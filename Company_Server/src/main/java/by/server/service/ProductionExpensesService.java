@@ -16,4 +16,9 @@ public class ProductionExpensesService {
     public void update(ProductionExpenses productionExpenses) {
         prExpensesRepo.update(productionExpenses);
     }
+
+    public Long findProductId(Long productId){
+        ProductionExpenses productionExpenses = prExpensesRepo.findByProductId(productId);
+        return productionExpenses.getProductionId();
+    }
 }

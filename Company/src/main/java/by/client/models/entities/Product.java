@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
-    private Long id;
+    private Long productId;
     private String productName;
     private BigDecimal costPrice;
     private BigDecimal plannedRevenue;
@@ -28,5 +28,11 @@ public class Product {
         this.finalPrice = finalPrice;
         this.markup = markup;
         this.createdBy = createdBy;
+    }
+
+    public Product(long id, String productName, BigDecimal plannedRevenue) {
+        this.productId = id;
+        this.productName = productName;
+        this.plannedRevenue = plannedRevenue;
     }
 }

@@ -31,22 +31,22 @@ public class Product {
     private BigDecimal plannedRevenue;
 
     @Column(name = "final_price", precision = 10, scale = 2)
-    private BigDecimal finalPrice;
+    private BigDecimal finalPrice = BigDecimal.ZERO;
 
     @Column(name = "markup", precision = 10, scale = 2)
-    private BigDecimal markup;
+    private BigDecimal markup = BigDecimal.ZERO;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     private ProductionExpenses productionExpenses;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     private RealizationExpenses realizationExpenses;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<PriceHistory> priceHistory;
 
     @Override

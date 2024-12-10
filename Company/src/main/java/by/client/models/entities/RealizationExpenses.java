@@ -17,4 +17,11 @@ public class RealizationExpenses {
     private BigDecimal distributionCost;
     private BigDecimal transportationCost;
     private BigDecimal otherExpenses;
+
+    public RealizationExpenses(BigDecimal marketingCost, BigDecimal distributionCost, BigDecimal transportationCost, BigDecimal otherExpenses) {
+        this.marketingCost = marketingCost;
+        this.distributionCost = distributionCost;
+        this.transportationCost = transportationCost;
+        this.otherExpenses = otherExpenses;
+    }
 }

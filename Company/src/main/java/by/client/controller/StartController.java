@@ -11,7 +11,7 @@ import java.util.Objects;
 public class StartController {
     public StartController(Stage primaryStage) throws IOException {
         ClientSocket.getInstance().getSocket();
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Registration.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/public/Login.fxml")));
         primaryStage.setTitle("Condorcet");
         primaryStage.setScene(new Scene(root, 600, 400));
         primaryStage.setMaximized(true);

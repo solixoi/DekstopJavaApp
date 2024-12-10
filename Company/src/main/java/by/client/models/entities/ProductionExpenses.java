@@ -17,4 +17,11 @@ public class ProductionExpenses {
     private BigDecimal materialCost;
     private BigDecimal overheadCost;
     private BigDecimal otherExpenses;
+
+    public ProductionExpenses (BigDecimal wagesCost, BigDecimal materialCost, BigDecimal overheadCost, BigDecimal otherExpenses) {
+        this.wagesCost = wagesCost;
+        this.materialCost = materialCost;
+        this.overheadCost = overheadCost;
+        this.otherExpenses = otherExpenses;
+    }
 }
