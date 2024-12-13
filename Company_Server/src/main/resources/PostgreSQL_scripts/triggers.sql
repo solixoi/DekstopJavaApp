@@ -39,7 +39,7 @@ BEGIN
         WHERE tgname = 'trigger_update_cost_price_production'
     ) THEN
 CREATE TRIGGER trigger_update_cost_price_production
-AFTER INSERT OR UPDATE ON public.production_expenses
+AFTER INSERT ON public.production_expenses
 FOR EACH ROW
 EXECUTE FUNCTION update_cost_price();
 END IF;
@@ -49,7 +49,7 @@ END IF;
         WHERE tgname = 'trigger_update_cost_price_realization'
     ) THEN
 CREATE TRIGGER trigger_update_cost_price_realization
-AFTER INSERT OR UPDATE ON public.realization_expenses
+AFTER INSERT ON public.realization_expenses
 FOR EACH ROW
 EXECUTE FUNCTION update_cost_price();
 END IF;

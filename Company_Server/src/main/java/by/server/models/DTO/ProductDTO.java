@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDTO {
-    private Long id;
+    private Long productId;
     private String productName;
     private BigDecimal costPrice;
     private BigDecimal plannedRevenue;
@@ -22,6 +22,7 @@ public class ProductDTO {
     private UserDTO createdBy;
 
     public ProductDTO(Product product) {
+        this.productId = product.getProductId();
         this.productName = product.getProductName();
         this.costPrice = product.getCostPrice();
         this.plannedRevenue = product.getPlannedRevenue();

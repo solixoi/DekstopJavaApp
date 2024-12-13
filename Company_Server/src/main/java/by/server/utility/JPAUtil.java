@@ -22,9 +22,9 @@ public class JPAUtil {
     public static EntityManagerFactory getEntityManagerFactory() {
         if (entityManagerFactory == null) {
             try {
-//                LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-//                Logger logger = loggerContext.getLogger("org.hibernate");
-//                logger.setLevel(Level.OFF);
+                LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+                Logger logger = loggerContext.getLogger("org.hibernate");
+                logger.setLevel(Level.OFF);
 
                 Thread.currentThread().setContextClassLoader(new ClassLoader() {
                     @Override

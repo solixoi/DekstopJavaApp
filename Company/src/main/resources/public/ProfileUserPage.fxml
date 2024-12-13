@@ -1,0 +1,5 @@
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+<AnchorPane prefHeight="1440.0" prefWidth="2560.0" stylesheets="@/style/notification.css, @/style/menu.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" >
+    <Label>profile</Label>
+</AnchorPane>

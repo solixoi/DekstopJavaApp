@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class    Main {
+public class Main {
     private static final int PORT = 6666;
     private static ServerSocket serverSocket;
     private static ClientThread clientThread;

@@ -1,9 +1,6 @@
 package by.client.models.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,6 +8,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Data
 @AllArgsConstructor
 public class Product {
     private Long productId;
@@ -30,8 +28,15 @@ public class Product {
         this.createdBy = createdBy;
     }
 
-    public Product(long id, String productName, BigDecimal plannedRevenue) {
+    public Product(Long id, User user, String productName, BigDecimal plannedRevenue) {
         this.productId = id;
+        this.createdBy = user;
+        this.productName = productName;
+        this.plannedRevenue = plannedRevenue;
+    }
+
+    public Product(User user, String productName, BigDecimal plannedRevenue) {
+        this.createdBy = user;
         this.productName = productName;
         this.plannedRevenue = plannedRevenue;
     }

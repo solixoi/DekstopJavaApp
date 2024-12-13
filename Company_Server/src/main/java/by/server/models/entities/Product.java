@@ -46,7 +46,7 @@ public class Product {
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     private RealizationExpenses realizationExpenses;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PriceHistory> priceHistory;
 
     @Override

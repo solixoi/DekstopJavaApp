@@ -4,6 +4,7 @@ import by.server.models.entities.ProductionExpenses;
 import by.server.models.entities.RealizationExpenses;
 import by.server.utility.JPAUtil;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 public class RealizationExpensesRepository extends GenericRepository<RealizationExpenses, Long> {
     public RealizationExpensesRepository() {
@@ -13,7 +14,7 @@ public class RealizationExpensesRepository extends GenericRepository<Realization
     public RealizationExpenses findByProductId(Long id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            return em.createQuery("select p from RealizationExpenses p where p.product.productId = :id", RealizationExpenses.class)
+            return em.createQuery("select rp from RealizationExpenses rp where rp.product.productId = :id", RealizationExpenses.class)
                     .setParameter("id", id)
                     .getSingleResult();
         } catch (Exception e) {

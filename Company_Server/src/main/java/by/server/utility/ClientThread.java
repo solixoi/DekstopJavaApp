@@ -90,17 +90,18 @@ public class ClientThread implements Runnable {
                             JsonObject jsonObject = JsonParser.parseString(request.getRequestMessage()).getAsJsonObject();
                             JsonElement productElement = jsonObject.get("product");
                             Product product = gson.fromJson(productElement, Product.class);
+                            System.out.println(product);
                             User user = userService.findById(product.getCreatedBy().getUserId());
                             product.setCreatedBy(user);
-                            productService.save(product);
                             JsonElement realizationExpensesJSON = jsonObject.get("RealizationExpenses");
                             RealizationExpenses realizationExpenses = gson.fromJson(realizationExpensesJSON, RealizationExpenses.class);
-                            realizationExpenses.setProduct(productService.findById(product.getProductId()));
-                            realizationExpensesService.save(realizationExpenses);
+                            realizationExpenses.setProduct(product);
                             JsonElement productionExpensesJSON = jsonObject.get("ProductionExpenses");
                             ProductionExpenses productionExpenses = gson.fromJson(productionExpensesJSON, ProductionExpenses.class);
-                            productionExpenses.setProduct(productService.findById(product.getProductId()));
-                            productionExpensesService.save(productionExpenses);
+                            productionExpenses.setProduct(product);
+                            product.setRealizationExpenses(realizationExpenses);
+                            product.setProductionExpenses(productionExpenses);
+                            productService.save(product);
                             product = productService.calculateTotalPrice(product.getProductId());
                             JsonObject returnObject = new JsonObject();
                             returnObject.add("product", gson.toJsonTree(new ProductDTO(product)));
@@ -120,36 +121,42 @@ public class ClientThread implements Runnable {
                             JsonElement productElement = jsonObject.get("product");
                             PriceHistory priceHistory = new PriceHistory();
                             Product product = gson.fromJson(productElement, Product.class);
-                            priceHistory.setProduct(productService.findById(product.getProductId()));
+                            priceHistory.setProduct(product);
                             priceHistory.setOldPrice(product.getFinalPrice());
                             ProductionExpenses productionExpenses = null;
                             RealizationExpenses realizationExpenses = null;
                             JsonElement userJSON = jsonObject.get("user");
                             User user = gson.fromJson(userJSON, User.class);
-                            productService.update(product);
+                            user.setRole(userService.findById(user.getUserId()).getRole());
+                            product.setCreatedBy(user);
                             JsonElement realizationExpensesJSON = jsonObject.get("RealizationExpenses");
                             if(!realizationExpensesJSON.isJsonNull()){
                                 realizationExpenses = gson.fromJson(realizationExpensesJSON, RealizationExpenses.class);
+                                System.out.println(product.getProductId());
                                 realizationExpenses.setRealizationId(realizationExpensesService.findProductId(product.getProductId()));
-                                realizationExpenses.setProduct(productService.findById(product.getProductId()));
+                                realizationExpenses.setProduct(product);
                                 realizationExpensesService.update(realizationExpenses);
-
+                                product.setCostPrice(realizationExpenses.getDistributionCost().add(realizationExpenses.getMarketingCost()).add(realizationExpenses.getOtherExpenses().add(
+                                        realizationExpenses.getTransportationCost())));
                             }
                             JsonElement productionExpensesJSON = jsonObject.get("ProductionExpenses");
                             if(!productionExpensesJSON.isJsonNull()){
                                 productionExpenses = gson.fromJson(productionExpensesJSON, ProductionExpenses.class);
                                 productionExpenses.setProductionId(productionExpensesService.findProductId(product.getProductId()));
-                                productionExpenses.setProduct(productService.findById(product.getProductId()));
+                                productionExpenses.setProduct(product);
                                 productionExpensesService.update(productionExpenses);
+                                product.setCostPrice(product.getCostPrice().add(productionExpenses.getOtherExpenses()).add(productionExpenses.getWagesCost()).add(productionExpenses.getOverheadCost()).add(
+                                        productionExpenses.getMaterialCost()));
                             }
+                            productService.update(product);
                             product = productService.calculateTotalPrice(product.getProductId());
                             priceHistory.setNewPrice(product.getFinalPrice());
                             priceHistoryService.save(priceHistory);
                             JsonObject returnObject = new JsonObject();
-                            returnObject.add("product", gson.toJsonTree(product));
-                            returnObject.add("RealizationExpenses", gson.toJsonTree(realizationExpenses));
-                            returnObject.add("ProductionExpenses", gson.toJsonTree(productionExpenses));
-                            logService.save(userService.findById(user.getUserId()), RequestType.UPDATE_USER_PRODUCT.toString());
+                            returnObject.add("product", gson.toJsonTree(new ProductDTO(product)));
+                            returnObject.add("RealizationExpenses", gson.toJsonTree(new RealizationExpensesDTO(realizationExpenses)));
+                            returnObject.add("ProductionExpenses", gson.toJsonTree(new ProductionExpensesDTO(productionExpenses)));
+                            logService.save(user, RequestType.UPDATE_USER_PRODUCT.toString());
                             response = new Response(ResponseStatus.OK, "Update successfully!", gson.toJson(returnObject));
                         } catch (Exception e){
                             System.out.println(e.getMessage());
@@ -169,7 +176,7 @@ public class ClientThread implements Runnable {
                                     products.add(new ProductDTO(ProductElement));
                                 }
                             }
-                            logService.save(userService.findById(product.getCreatedBy().getUserId()), RequestType.DELETE_USER_PRODUCT.toString());
+                            logService.save(user, RequestType.DELETE_USER_PRODUCT.toString());
                             response = new Response(ResponseStatus.OK, "Delete successfully!", gson.toJson(products));
                         } catch (Exception e){
                             System.out.println(e.getMessage());
@@ -190,6 +197,23 @@ public class ClientThread implements Runnable {
                             }
                             logService.save(user, RequestType.GET_USER_PRODUCTS.toString());
                             response = new Response(ResponseStatus.OK, "Get successfully!", gson.toJson(products));
+                        } catch (Exception e){
+                            System.out.println(e.getMessage());
+                            response = new Response(ResponseStatus.ERROR, e.getMessage(), null);
+                        }
+                        break;
+                    }
+                    case GET_INFO -> {
+                        try {
+                            System.out.println("Received Request: " + request);
+                            Product product = gson.fromJson(request.getRequestMessage(), Product.class);
+                            Product returnProduct = productService.findById(product.getProductId());
+                            JsonObject returnObject = new JsonObject();
+                            returnObject.add("product", gson.toJsonTree(new ProductDTO(returnProduct)));
+                            returnObject.add("RealizationExpenses", gson.toJsonTree(new RealizationExpensesDTO(returnProduct.getRealizationExpenses())));
+                            returnObject.add("ProductionExpenses", gson.toJsonTree(new ProductionExpensesDTO(returnProduct.getProductionExpenses())));
+                            logService.save(product.getCreatedBy(), RequestType.GET_INFO.toString());
+                            response = new Response(ResponseStatus.OK, "Get successfully!", gson.toJson(returnObject));
                         } catch (Exception e){
                             System.out.println(e.getMessage());
                             response = new Response(ResponseStatus.ERROR, e.getMessage(), null);
@@ -528,6 +552,27 @@ public class ClientThread implements Runnable {
                             }
                             logService.save(user, RequestType.GET_ALL_BANS.toString());
                             response = new Response(ResponseStatus.OK, "Get user ban info successfully!", gson.toJson(users));
+                        } catch (Exception e){
+                            System.out.println(e.getMessage());
+                            response = new Response(ResponseStatus.ERROR, e.getMessage(), null);
+                        }
+                        break;
+                    }
+                    case GET_LOAD_DATA_MAIN_PAGE -> {
+                        try {
+                            User user = gson.fromJson(request.getRequestMessage(), User.class);
+                            user = userService.findById(user.getUserId());
+                            JsonObject returnObject = new JsonObject();
+                            long totalChange = 0;
+                            for (Product product : user.getProducts()) {
+                                for (PriceHistory priceHistory : product.getPriceHistory()) {
+                                    totalChange += 1;
+                                }
+                            }
+                            returnObject.add("countEditProductData", gson.toJsonTree(totalChange));
+                            returnObject.add("countProducts", gson.toJsonTree(user.getProducts().size()));
+                            logService.save(user, RequestType.GET_LOAD_DATA_MAIN_PAGE.toString());
+                            response = new Response(ResponseStatus.OK, "Login successfully!", gson.toJson(returnObject));
                         } catch (Exception e){
                             System.out.println(e.getMessage());
                             response = new Response(ResponseStatus.ERROR, e.getMessage(), null);

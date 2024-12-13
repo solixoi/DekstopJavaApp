@@ -4,6 +4,7 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Shadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
@@ -16,8 +17,8 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="1440.0" prefWidth="2560.0" stylesheets="@/style/notification.css, @/style/menu.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.client.controller.MainPageController">
-            <children>
+<AnchorPane prefHeight="1440.0" prefWidth="2560.0" stylesheets="@/style/notification.css, @/style/menu.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.client.controller.PricesPageController">
+   <children>
       <Pane layoutX="-13.0" prefHeight="1440.0" prefWidth="640.0" style="-fx-background-color: #313540;">
          <children>
             <Text layoutX="193.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Главное меню" wrappingWidth="280.953125">
@@ -46,7 +47,7 @@
                   </LinearGradient>
                </fill>
             </Text>
-            <Text fx:id="mainPageNavigation" layoutX="40.0" layoutY="168.0"  strokeType="OUTSIDE" strokeWidth="0.0" text="Главная страница" wrappingWidth="280.953125">
+            <Text layoutX="44.0" layoutY="258.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Расчет цены изделия " wrappingWidth="319.953125">
                <font>
                   <Font name="Gabriola" size="43.0" />
                </font>
@@ -75,7 +76,7 @@
                   <Cursor fx:constant="CROSSHAIR" />
                </cursor>
             </Text>
-            <Text fx:id="pricesPageNavigation" layoutX="40.0" layoutY="258.0" onMouseClicked="#clickedPricesPage" strokeType="OUTSIDE" strokeWidth="0.0" text="Расчет цены изделия" wrappingWidth="355.953125">
+            <Text fx:id="mainPageNavigation" layoutX="40.0" layoutY="168.0" onMouseClicked="#clickedMainPage" strokeType="OUTSIDE" strokeWidth="0.0" text="Главная страница" wrappingWidth="280.953125">
                <font>
                   <Font name="Gabriola" size="43.0" />
                </font>
@@ -117,7 +118,7 @@
                   <Cursor fx:constant="CROSSHAIR" />
                </cursor>
             </Text>
-            <Text fx:id="adminPageNavigation" layoutX="40.0" visible="false" layoutY="528.0" onMouseClicked="#clickedAdminPageNavigation" strokeType="OUTSIDE" strokeWidth="0.0" text="Админ панель" wrappingWidth="355.953125">
+            <Text fx:id="adminPageNavigation" visible="false" layoutX="40.0" layoutY="528.0" onMouseClicked="#clickedAdminPageNavigation" strokeType="OUTSIDE" strokeWidth="0.0" text="Админ панель" wrappingWidth="355.953125">
                <font>
                   <Font name="Gabriola" size="43.0" />
                </font>
@@ -147,7 +148,7 @@
                   </Shadow>
                </effect>
             </Line>
-            <Button fx:id="usernameButton" alignment="TOP_RIGHT" blendMode="MULTIPLY" cache="true" contentDisplay="RIGHT" focusTraversable="false" layoutX="1456.0" layoutY="15.0" onMouseClicked="#showContextMenu" pickOnBounds="false" prefHeight="90.0" prefWidth="468.0" style="-fx-border-color: transparent; -fx-background-color: transparent;" text="Username">
+            <Button fx:id="usernameButton" alignment="TOP_RIGHT" blendMode="MULTIPLY" cache="true" contentDisplay="RIGHT" focusTraversable="false" layoutX="1456.0" layoutY="15.0" pickOnBounds="false" prefHeight="90.0" prefWidth="468.0" style="-fx-border-color: transparent; -fx-background-color: transparent;" text="Username Username" onMouseClicked="#showContextMenu">
                <graphic>
                   <Polygon style="-fx-translate-y: 4px" points="0.0,9.0,9.0,18.0,18.0,9.0" fill="black" />
                </graphic>
@@ -163,59 +164,96 @@
             </Button>
          </children>
       </Pane>
-      <Pane layoutX="627.0" layoutY="116.0" prefHeight="1321.0" prefWidth="1933.0" style="-fx-background-color: #474c5c;">
+      <Pane layoutX="627.0" layoutY="99.0" prefHeight="1321.0" prefWidth="1933.0" style="-fx-background-color: #474c5c;">
          <children>
-            <Text fx:id="helloLabel" layoutX="590.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Добро пожаловать,  username!">
+            <TextField fx:id="productNameField" layoutX="129.0" layoutY="304.0" prefHeight="54.0" prefWidth="393.0" promptText="Наименование товара" style="-fx-background-color: #313540; -fx-border-color: transparent; -fx-background-radius: 0 20px 20px 0; -fx-prompt-text-fill: #FEFFFE; -fx-text-fill: #FFFFFF; -fx-font-size: 28px;">
                <font>
-                  <Font name="Gabriola" size="76.0" />
+                  <Font name="Gabriola" size="25.0" />
                </font>
+            </TextField>
+            <Text layoutX="129.0" layoutY="233.0" onMouseClicked="#clickedAllPricesNavigation" strokeType="OUTSIDE" strokeWidth="0.0" text="Информация о товаре" wrappingWidth="329.0">
+               <font>
+                  <Font name="Gabriola" size="43.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="CROSSHAIR" />
+               </cursor>
             </Text>
-            <Label alignment="CENTER" layoutX="141.0" layoutY="268.0" prefHeight="76.0" prefWidth="310.0" style="-fx-text-fill: #000000; -fx-border-color: #000000; -fx-border-radius: 50px 0 0 50px;" text="Дата создания аккаунта">
+            <Text layoutX="751.0" layoutY="233.0" onMouseClicked="#clickedAllPricesNavigation" strokeType="OUTSIDE" strokeWidth="0.0" text="Производственные затраты" wrappingWidth="432.0">
                <font>
-                  <Font name="Gabriola" size="31.0" />
+                  <Font name="Gabriola" size="43.0" />
                </font>
-            </Label>
-            <Label fx:id="dateCreationAccount" alignment="CENTER" layoutX="451.0" layoutY="268.0" prefHeight="76.0" prefWidth="125.0" style="-fx-text-fill: #000000; -fx-border-color: #000000; -fx-border-radius: 0 50px 50px 0;" text="2024:10:01">
+               <cursor>
+                  <Cursor fx:constant="CROSSHAIR" />
+               </cursor>
+            </Text>
+            <Text layoutX="1447.0" layoutY="233.0" onMouseClicked="#clickedAllPricesNavigation" strokeType="OUTSIDE" strokeWidth="0.0" text="Затраты на реализацию" wrappingWidth="365.0">
                <font>
-                  <Font name="Gabriola" size="31.0" />
+                  <Font name="Gabriola" size="43.0" />
                </font>
-            </Label>
-            <Label alignment="CENTER" layoutX="141.0" layoutY="466.0" prefHeight="76.0" prefWidth="442.0" style="-fx-text-fill: #000000; -fx-border-color: #000000; -fx-border-radius: 50px 0 0 50px;" text="Дней с момента регистарции аккаунта">
+               <cursor>
+                  <Cursor fx:constant="CROSSHAIR" />
+               </cursor>
+            </Text>
+            <TextField fx:id="plannedRevenueField" layoutX="129.0" layoutY="404.0" prefHeight="54.0" prefWidth="393.0" promptText="Планируемая выручка" style="-fx-background-color: #313540; -fx-border-color: transparent; -fx-background-radius: 0 20px 20px 0; -fx-prompt-text-fill: #FEFFFE; -fx-text-fill: #FFFFFF; -fx-font-size: 28px;">
                <font>
-                  <Font name="Gabriola" size="31.0" />
+                  <Font name="Gabriola" size="25.0" />
                </font>
-            </Label>
-            <Label fx:id="dayRegisterAccount" alignment="CENTER" layoutX="583.0" layoutY="466.0" prefHeight="76.0" prefWidth="158.0" style="-fx-text-fill: #000000; -fx-border-color: #000000; -fx-border-radius: 0 50px 50px 0;" text="10100 дней">
+            </TextField>
+            <TextField fx:id="materialCostField" layoutX="751.0" layoutY="304.0" prefHeight="54.0" prefWidth="393.0" promptText="Материальные затраты" style="-fx-background-color: #313540; -fx-border-color: transparent; -fx-background-radius: 0 20px 20px 0; -fx-prompt-text-fill: #FEFFFE; -fx-text-fill: #FFFFFF; -fx-font-size: 28px;">
                <font>
-                  <Font name="Gabriola" size="31.0" />
+                  <Font name="Gabriola" size="25.0" />
                </font>
-            </Label>
-            <Label alignment="CENTER" layoutX="1124.0" layoutY="268.0" prefHeight="76.0" prefWidth="468.0" style="-fx-text-fill: #000000; -fx-border-color: #000000; -fx-border-radius: 50px 0 0 50px;" text="Всего произведенно расчетов цены изделия">
+            </TextField>
+            <TextField fx:id="overheadCostField" layoutX="751.0" layoutY="404.0" prefHeight="54.0" prefWidth="393.0" promptText="Накладные расходы" style="-fx-background-color: #313540; -fx-border-color: transparent; -fx-background-radius: 0 20px 20px 0; -fx-prompt-text-fill: #FEFFFE; -fx-text-fill: #FFFFFF; -fx-font-size: 28px;">
                <font>
-                  <Font name="Gabriola" size="31.0" />
+                  <Font name="Gabriola" size="25.0" />
                </font>
-            </Label>
-            <Label fx:id="countProductsLabel" alignment="CENTER" layoutX="1592.0" layoutY="268.0" prefHeight="76.0" prefWidth="125.0" style="-fx-text-fill: #000000; -fx-border-color: #000000; -fx-border-radius: 0 50px 50px 0;" text="110 раз">
+            </TextField>
+            <TextField fx:id="wagesCostField" layoutX="751.0" layoutY="504.0" prefHeight="54.0" prefWidth="393.0" promptText="Расходы на заработную плату" style="-fx-background-color: #313540; -fx-border-color: transparent; -fx-background-radius: 0 20px 20px 0; -fx-prompt-text-fill: #FEFFFE; -fx-text-fill: #FFFFFF; -fx-font-size: 28px;">
                <font>
-                  <Font name="Gabriola" size="31.0" />
+                  <Font name="Gabriola" size="25.0" />
                </font>
-            </Label>
-            <Label alignment="CENTER" layoutX="1124.0" layoutY="466.0" prefHeight="76.0" prefWidth="468.0" style="-fx-text-fill: #000000; -fx-border-color: #000000; -fx-border-radius: 50px 0 0 50px;" text="Всего обновлений цены изделия">
+            </TextField>
+            <TextField fx:id="otherExpensesProductionField" layoutX="751.0" layoutY="604.0" prefHeight="54.0" prefWidth="393.0" promptText="Другие производственные затраты" style="-fx-background-color: #313540; -fx-border-color: transparent; -fx-background-radius: 0 20px 20px 0; -fx-prompt-text-fill: #FEFFFE; -fx-text-fill: #FFFFFF; -fx-font-size: 28px;">
                <font>
-                  <Font name="Gabriola" size="31.0" />
+                  <Font name="Gabriola" size="25.0" />
                </font>
-            </Label>
-            <Label fx:id="countEditProductsLabel" alignment="CENTER" layoutX="1592.0" layoutY="466.0" prefHeight="76.0" prefWidth="125.0" style="-fx-text-fill: #000000; -fx-border-color: #000000; -fx-border-radius: 0 50px 50px 0;" text="110 раз">
+            </TextField>
+            <TextField fx:id="distributionCostField" layoutX="1447.0" layoutY="304.0" prefHeight="54.0" prefWidth="393.0" promptText="Распределительные затраты" style="-fx-background-color: #313540; -fx-border-color: transparent; -fx-background-radius: 0 20px 20px 0; -fx-prompt-text-fill: #FEFFFE; -fx-text-fill: #FFFFFF; -fx-font-size: 28px;">
                <font>
-                  <Font name="Gabriola" size="31.0" />
+                  <Font name="Gabriola" size="25.0" />
                </font>
-            </Label>
+            </TextField>
+            <TextField fx:id="marketingCostField" layoutX="1447.0" layoutY="404.0" prefHeight="54.0" prefWidth="393.0" promptText="Маркетинговые затраты" style="-fx-background-color: #313540; -fx-border-color: transparent; -fx-background-radius: 0 20px 20px 0; -fx-prompt-text-fill: #FEFFFE; -fx-text-fill: #FFFFFF; -fx-font-size: 28px;">
+               <font>
+                  <Font name="Gabriola" size="25.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="transportationCostField" layoutX="1447.0" layoutY="504.0" prefHeight="54.0" prefWidth="393.0" promptText="Затраты на транспортировку" style="-fx-background-color: #313540; -fx-border-color: transparent; -fx-background-radius: 0 20px 20px 0; -fx-prompt-text-fill: #FEFFFE; -fx-text-fill: #FFFFFF; -fx-font-size: 28px;">
+               <font>
+                  <Font name="Gabriola" size="25.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="otherExpensesRealizationField" layoutX="1447.0" layoutY="604.0" prefHeight="54.0" prefWidth="393.0" promptText="Другие затраты на реализацию" style="-fx-background-color: #313540; -fx-border-color: transparent; -fx-background-radius: 0 20px 20px 0; -fx-prompt-text-fill: #FEFFFE; -fx-text-fill: #FFFFFF; -fx-font-size: 28px;">
+               <font>
+                  <Font name="Gabriola" size="25.0" />
+               </font>
+            </TextField>
+            <Button fx:id="buttonSubmitPrice" layoutX="703.0" layoutY="851.0" mnemonicParsing="false" onAction="#clickedButtonSubmitPrice" prefHeight="80.0" prefWidth="489.0" style="-fx-text-fill: #FFFFFF; -fx-background-color: #313540; -fx-border-color: black; -fx-background-radius: 50px; -fx-border-radius: 50px; -fx-font-size: 18px;" text="Расчитать цену изделия">
+               <font>
+                  <Font name="Gabriola" size="32.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
          </children>
       </Pane>
-               <Label fx:id="labelMessage" alignment="TOP_RIGHT" disable="true" layoutX="1873.0" layoutY="14.0" prefHeight="46.0" prefWidth="673.0" styleClass="notification" text="Error label" visible="false" wrapText="true">
-                  <font>
-                     <Font name="Arial Italic" size="19.0" />
-                  </font>
-               </Label>
+      <Label fx:id="labelMessage" alignment="TOP_RIGHT" disable="true" layoutX="1873.0" layoutY="14.0" prefHeight="46.0" prefWidth="673.0" styleClass="notification" text="Error label" visible="false" wrapText="true">
+         <font>
+            <Font name="Arial Italic" size="19.0" />
+         </font>
+      </Label>
             </children>
 </AnchorPane>

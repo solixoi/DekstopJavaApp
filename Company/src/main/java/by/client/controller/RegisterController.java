@@ -15,7 +15,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -34,7 +33,7 @@ public class RegisterController {
     @FXML
     private PasswordField passwordfieldPassword;
     @FXML
-    private Button buttonCancel;
+    private Button buttonLogin;
     @FXML
     private PasswordField passwordfieldPasswordEquals;
     @FXML
@@ -46,11 +45,6 @@ public class RegisterController {
 
     @FXML
     public void initialize() {
-        BoxBlur blur = new BoxBlur();
-        blur.setWidth(50);
-        blur.setHeight(50);
-        blur.setIterations(20);
-        formContainer.setEffect(blur);
     }
 
     @FXML
@@ -68,7 +62,6 @@ public class RegisterController {
         user.setPassword(passwordfieldPassword.getText());
         request.setRequestMessage(new Gson().toJson(user));
         request.setRequestType(RequestType.REGISTER);
-        System.out.println(user);
         ClientSocket.getInstance().getOut().println(new Gson().toJson(request));
         String answer = ClientSocket.getInstance().getIn().readLine();
         Response response = new Gson().fromJson(answer, Response.class);
@@ -87,7 +80,7 @@ public class RegisterController {
         newStage.setScene(new Scene(root));
         newStage.setMaximized(true);
         newStage.show();
-        Stage currentStage = (Stage) buttonCancel.getScene().getWindow();
+        Stage currentStage = (Stage) buttonLogin.getScene().getWindow();
         currentStage.close();
     }
 

@@ -3,27 +3,25 @@ package by.client.controller;
 import by.client.models.entities.Product;
 import by.client.models.entities.ProductionExpenses;
 import by.client.models.entities.RealizationExpenses;
+import by.client.models.entities.User;
 import by.client.models.enums.RequestType;
 import by.client.models.enums.ResponseStatus;
 import by.client.models.enums.Roles;
 import by.client.models.tcp.Request;
 import by.client.models.tcp.Response;
 import by.client.utility.ClientSocket;
-import by.client.utility.Information;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import by.client.models.entities.User;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.control.MenuItem;
-import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -31,20 +29,19 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ResourceBundle;
 
-public class MainPageController implements Initializable {
+public class PricesPageController implements Initializable {
 
     @FXML
-    private Text clickedLogout, helloLabel, pricesPageNavigation, adminPageNavigation, allPricesPageNavigation, reportPageNavigation;
+    private Text clickedLogout, mainPageNavigation, adminPageNavigation, allPricesPageNavigation, reportPageNavigation;
 
     @FXML
-    private Label labelMessage, dateCreationAccount, dayRegisterAccount, countProductsLabel, countEditProductsLabel;
+    private TextField productNameField, plannedRevenueField, materialCostField, overheadCostField, wagesCostField,
+            otherExpensesProductionField, distributionCostField, marketingCostField, transportationCostField, otherExpensesRealizationField;
+
+    @FXML
+    private Label labelMessage;
 
     @FXML
     private Button usernameButton;
@@ -56,45 +53,48 @@ public class MainPageController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         loadContextMenu();
         User user = ClientSocket.getInstance().getUser();
-        refreshLoadData();
         if (user.getRole().equals(Roles.ADMIN)) {
             adminPageNavigation.setVisible(true);
             reportPageNavigation.setVisible(true);
         } else if (user.getRole().equals(Roles.MANAGER)) {
             reportPageNavigation.setVisible(true);
         }
-        LocalDate creationDate = user.getDateCreation().toLocalDateTime().toLocalDate();
-        dateCreationAccount.setText(creationDate.format(DateTimeFormatter.ofPattern("yyyy:MM:dd")));
-        dayRegisterAccount.setText(ChronoUnit.DAYS.between(creationDate, LocalDate.now()) + " дней");
         usernameButton.setText(user.getUsername());
-        helloLabel.setText(String.format("Добро пожаловать, %s!", user.getUsername()));
-        countProductsLabel.setText(Information.getInstance().getCountProducts() != null ? String.valueOf(Information.getInstance().getCountProducts()) + " раз" : "0 раз");
-        countEditProductsLabel.setText(Information.getInstance().getCountEditProducts() != null ? String.valueOf(Information.getInstance().getCountEditProducts()) + " раз" : "0 раз");
     }
 
-    private void refreshLoadData() {
-        try {
-            Request request = new Request();
+    @FXML
+    public void clickedButtonSubmitPrice(ActionEvent event) throws IOException {
+        Request request = new Request();
 
-            User user = ClientSocket.getInstance().getUser().clone();
-            user.setRole(null);
+        JsonObject jsonObject = new JsonObject();
+        User user = ClientSocket.getInstance().getUser().clone();
+        user.setRole(null);
 
-            request.setRequestMessage(new Gson().toJson(user));
-            request.setRequestType(RequestType.GET_LOAD_DATA_MAIN_PAGE);
-            ClientSocket.getInstance().getOut().println(new Gson().toJson(request));
-            String answer = ClientSocket.getInstance().getIn().readLine();
-            Response response = new Gson().fromJson(answer, Response.class);
-            JsonObject jsonObject = new Gson().fromJson(response.getResponseData(), JsonObject.class);
-            Long countProducts = jsonObject.has("countProducts") ? jsonObject.get("countProducts").getAsLong() : 0L;
-            Long countEditProductData = jsonObject.has("countEditProductData") ? jsonObject.get("countEditProductData").getAsLong() : 0L;
-            Information.getInstance().setProductCounts(countProducts, countEditProductData);
-            if (response.getStatus() == ResponseStatus.ERROR) {
-                showMessage(response.getMessage(), "error");
-            }
-        } catch (Exception e){
-            System.out.println(e.getMessage());
+
+        Product sendProduct = new Product(user, productNameField.getText(), BigDecimal.valueOf(Long.parseLong(plannedRevenueField.getText())));
+        jsonObject.add("product", new Gson().toJsonTree(sendProduct));
+
+        ProductionExpenses productionExpenses = new ProductionExpenses( BigDecimal.valueOf(Long.parseLong(wagesCostField.getText())), BigDecimal.valueOf(Long.parseLong(materialCostField.getText())),
+                BigDecimal.valueOf(Long.parseLong(overheadCostField.getText())),  BigDecimal.valueOf(Long.parseLong(otherExpensesProductionField.getText())));
+        jsonObject.add("ProductionExpenses", new Gson().toJsonTree(productionExpenses));
+
+
+        RealizationExpenses realizationExpenses = new RealizationExpenses( BigDecimal.valueOf(Long.parseLong(marketingCostField.getText())), BigDecimal.valueOf(Long.parseLong(distributionCostField.getText())),
+                BigDecimal.valueOf(Long.parseLong(transportationCostField.getText())),  BigDecimal.valueOf(Long.parseLong(otherExpensesRealizationField.getText())));
+        jsonObject.add("RealizationExpenses", new Gson().toJsonTree(realizationExpenses));
+
+        request.setRequestMessage(new Gson().toJson(jsonObject));
+        request.setRequestType(RequestType.CALCULATE_PRODUCT_PRICE);
+        ClientSocket.getInstance().getOut().println(new Gson().toJson(request));
+        String answer = ClientSocket.getInstance().getIn().readLine();
+        Response response = new Gson().fromJson(answer, Response.class);
+        if (response.getStatus() == ResponseStatus.OK) {
+            showMessage(response.getMessage(), "success");
+        } else {
+            showMessage(response.getMessage(), "error");
         }
     }
+
 
     @FXML
     public void clickedLogout() {
@@ -118,7 +118,7 @@ public class MainPageController implements Initializable {
         contextMenu.show(usernameButton.getScene().getWindow(), 2415, 95);
     }
 
-    private void loadContextMenu() {
+    private void loadContextMenu(){
         contextMenu = new ContextMenu();
         MenuItem profileItem = new MenuItem("Профиль");
         profileItem.setOnAction(event -> clickedUserProfilePage());
@@ -142,7 +142,7 @@ public class MainPageController implements Initializable {
             newStage.setScene(new Scene(root));
             newStage.setMaximized(true);
             newStage.show();
-            Stage currentStage = (Stage) pricesPageNavigation.getScene().getWindow();
+            Stage currentStage = (Stage) mainPageNavigation.getScene().getWindow();
             currentStage.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -150,15 +150,16 @@ public class MainPageController implements Initializable {
     }
 
 
+
     @FXML
-    public void clickedPricesPage(MouseEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/public/PricesPage.fxml"));
+    public void clickedMainPage(MouseEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/public/MainPage.fxml"));
         Parent root = loader.load();
         Stage newStage = new Stage();
         newStage.setScene(new Scene(root));
         newStage.setMaximized(true);
         newStage.show();
-        Stage currentStage = (Stage) pricesPageNavigation.getScene().getWindow();
+        Stage currentStage = (Stage) mainPageNavigation.getScene().getWindow();
         currentStage.close();
     }
 
@@ -203,7 +204,7 @@ public class MainPageController implements Initializable {
         labelMessage.getStyleClass().removeAll("success", "error");
         labelMessage.getStyleClass().add(type);
         labelMessage.setVisible(true);
-
+        labelMessage.toFront();
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.seconds(3),
                 event -> labelMessage.setVisible(false)

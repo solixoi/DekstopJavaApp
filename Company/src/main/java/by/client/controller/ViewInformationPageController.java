@@ -3,6 +3,7 @@ package by.client.controller;
 import by.client.models.entities.Product;
 import by.client.models.entities.ProductionExpenses;
 import by.client.models.entities.RealizationExpenses;
+import by.client.models.entities.User;
 import by.client.models.enums.RequestType;
 import by.client.models.enums.ResponseStatus;
 import by.client.models.enums.Roles;
@@ -14,37 +15,35 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import by.client.models.entities.User;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.control.MenuItem;
-import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ResourceBundle;
 
-public class MainPageController implements Initializable {
+public class ViewInformationPageController implements Initializable {
+    @FXML
+    private TextField finalPriceField, markupField, costPriceField, productNameField, otherExpensesRealizationField, transportationCostField, marketingCostField, distributionCostField,
+            otherExpensesProductionField, wagesCostField, overheadCostField, materialCostField, plannedRevenueField;
 
     @FXML
-    private Text clickedLogout, helloLabel, pricesPageNavigation, adminPageNavigation, allPricesPageNavigation, reportPageNavigation;
+    private Text clickedLogout, mainPageNavigation, pricesPageNavigation, adminPageNavigation, reportPageNavigation;
 
     @FXML
-    private Label labelMessage, dateCreationAccount, dayRegisterAccount, countProductsLabel, countEditProductsLabel;
+    private Label labelMessage;
 
     @FXML
     private Button usernameButton;
@@ -52,49 +51,71 @@ public class MainPageController implements Initializable {
     @FXML
     private ContextMenu contextMenu;
 
+
+    @Getter
+    @Setter
+    private Product productLabel;
+    @Getter
+    @Setter
+    private RealizationExpenses realizationExpenses;
+    @Getter
+    @Setter
+    private ProductionExpenses productionExpenses;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        getProductsData();
         loadContextMenu();
         User user = ClientSocket.getInstance().getUser();
-        refreshLoadData();
         if (user.getRole().equals(Roles.ADMIN)) {
             adminPageNavigation.setVisible(true);
             reportPageNavigation.setVisible(true);
         } else if (user.getRole().equals(Roles.MANAGER)) {
             reportPageNavigation.setVisible(true);
         }
-        LocalDate creationDate = user.getDateCreation().toLocalDateTime().toLocalDate();
-        dateCreationAccount.setText(creationDate.format(DateTimeFormatter.ofPattern("yyyy:MM:dd")));
-        dayRegisterAccount.setText(ChronoUnit.DAYS.between(creationDate, LocalDate.now()) + " дней");
         usernameButton.setText(user.getUsername());
-        helloLabel.setText(String.format("Добро пожаловать, %s!", user.getUsername()));
-        countProductsLabel.setText(Information.getInstance().getCountProducts() != null ? String.valueOf(Information.getInstance().getCountProducts()) + " раз" : "0 раз");
-        countEditProductsLabel.setText(Information.getInstance().getCountEditProducts() != null ? String.valueOf(Information.getInstance().getCountEditProducts()) + " раз" : "0 раз");
+        productNameField.setText(productLabel.getProductName());
+        finalPriceField.setText(String.valueOf(productLabel.getFinalPrice()));
+        markupField.setText(String.valueOf(productLabel.getMarkup()));
+        costPriceField.setText(String.valueOf(productLabel.getCostPrice()));
+
+        plannedRevenueField.setText(String.valueOf(productLabel.getPlannedRevenue()));
+        wagesCostField.setText(String.valueOf(productionExpenses.getWagesCost()));
+        overheadCostField.setText(String.valueOf(productionExpenses.getOverheadCost()));
+        materialCostField.setText(String.valueOf(productionExpenses.getMaterialCost()));
+        otherExpensesProductionField.setText(String.valueOf(productionExpenses.getOtherExpenses()));
+
+        transportationCostField.setText(String.valueOf(realizationExpenses.getTransportationCost()));
+        marketingCostField.setText(String.valueOf(realizationExpenses.getMarketingCost()));
+        distributionCostField.setText(String.valueOf(realizationExpenses.getDistributionCost()));
+        otherExpensesRealizationField.setText(String.valueOf(realizationExpenses.getOtherExpenses()));
     }
 
-    private void refreshLoadData() {
+    private void getProductsData() {
         try {
+            Product product = Information.getInstance().getProduct();
             Request request = new Request();
-
-            User user = ClientSocket.getInstance().getUser().clone();
-            user.setRole(null);
-
-            request.setRequestMessage(new Gson().toJson(user));
-            request.setRequestType(RequestType.GET_LOAD_DATA_MAIN_PAGE);
+            product.getCreatedBy().setRole(null);
+            request.setRequestType(RequestType.GET_INFO);
+            request.setRequestMessage(new Gson().toJson(product));
             ClientSocket.getInstance().getOut().println(new Gson().toJson(request));
             String answer = ClientSocket.getInstance().getIn().readLine();
             Response response = new Gson().fromJson(answer, Response.class);
-            JsonObject jsonObject = new Gson().fromJson(response.getResponseData(), JsonObject.class);
-            Long countProducts = jsonObject.has("countProducts") ? jsonObject.get("countProducts").getAsLong() : 0L;
-            Long countEditProductData = jsonObject.has("countEditProductData") ? jsonObject.get("countEditProductData").getAsLong() : 0L;
-            Information.getInstance().setProductCounts(countProducts, countEditProductData);
-            if (response.getStatus() == ResponseStatus.ERROR) {
+            if(response.getStatus() == ResponseStatus.OK) {
+                JsonObject jsonObject = new Gson().fromJson(response.getResponseData(), JsonObject.class);
+                productLabel = new Gson().fromJson(jsonObject.get("product"), Product.class);
+                realizationExpenses = new Gson().fromJson(jsonObject.get("RealizationExpenses"), RealizationExpenses.class);
+                productionExpenses = new Gson().fromJson(jsonObject.get("ProductionExpenses"), ProductionExpenses.class);
+                showMessage(response.getMessage(), "success");
+            } else {
                 showMessage(response.getMessage(), "error");
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
+            showMessage(e.getMessage(), "error");
         }
     }
+
 
     @FXML
     public void clickedLogout() {
@@ -163,14 +184,14 @@ public class MainPageController implements Initializable {
     }
 
     @FXML
-    public void clickedAllPricesNavigation(MouseEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/public/AllPricesPageNavigation.fxml"));
+    public void clickedMainPage(MouseEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/public/MainPage.fxml"));
         Parent root = loader.load();
         Stage newStage = new Stage();
         newStage.setScene(new Scene(root));
         newStage.setMaximized(true);
         newStage.show();
-        Stage currentStage = (Stage) allPricesPageNavigation.getScene().getWindow();
+        Stage currentStage = (Stage) mainPageNavigation.getScene().getWindow();
         currentStage.close();
     }
 
@@ -203,11 +224,22 @@ public class MainPageController implements Initializable {
         labelMessage.getStyleClass().removeAll("success", "error");
         labelMessage.getStyleClass().add(type);
         labelMessage.setVisible(true);
-
+        labelMessage.toFront();
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.seconds(3),
                 event -> labelMessage.setVisible(false)
         ));
         timeline.play();
+    }
+
+    public void clickedButtonBack(ActionEvent actionEvent)  throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/public/AllPricesPageNavigation.fxml"));
+        Parent root = loader.load();
+        Stage newStage = new Stage();
+        newStage.setScene(new Scene(root));
+        newStage.setMaximized(true);
+        newStage.show();
+        Stage currentStage = (Stage) reportPageNavigation.getScene().getWindow();
+        currentStage.close();
     }
 }

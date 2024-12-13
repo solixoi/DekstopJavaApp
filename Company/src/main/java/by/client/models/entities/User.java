@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User implements Cloneable{
     private Long userId;
     private String password;
     private String username;
@@ -18,4 +18,13 @@ public class User {
     private String firstName;
     private String lastName;
     private Roles role;
+
+    @Override
+    public User clone() {
+        try {
+            return (User) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

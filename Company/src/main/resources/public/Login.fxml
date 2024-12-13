@@ -1,29 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<StackPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.client.controller.LoginController" stylesheets="@/style/login.css" styleClass="stack-pane">
-    <children>
-        <StackPane fx:id="backgroundLayer" styleClass="background-layer"></StackPane>
 
-        <GridPane fx:id="formContainer" alignment="CENTER" hgap="10" vgap="10" styleClass="form-container">
+<?import javafx.scene.Cursor?>
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.client.controller.LoginController" prefHeight="1440.0" prefWidth="2560.0" stylesheets="@/style/notification.css">
             <children>
-                <Label text="Вход" styleClass="label" GridPane.halignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-
-                <Label text="Логин:" styleClass="label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                <TextField fx:id="textfieldLogin" styleClass="text-field" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-
-                <Label text="Пароль:" styleClass="label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                <PasswordField fx:id="passwordField" styleClass="password-field" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-
-                <Button fx:id="buttonRegister" text="Зарегистрироваться" styleClass="button" onAction="#onRegisterButtonClicked" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-                <Button fx:id="buttonLogin" text="Авторизоваться" styleClass="button" onAction="#onLoginButtonClicked" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+               <Pane layoutX="1280.0" layoutY="415.0" prefHeight="402.0" prefWidth="798.0" style="-fx-background-color: #ffffff; -fx-background-radius: 0 50px 50px 0;">
+                  <children>
+                     <Label layoutX="267.0" layoutY="36.0" text="Вход в аккаунт">
+                        <font>
+                           <Font name="Cambria Bold" size="31.0" />
+                        </font>
+                     </Label>
+                     <TextField fx:id="textfieldLogin" layoutX="43.0" layoutY="114.0" prefHeight="43.0" prefWidth="673.0" promptText="Логин или электронный адрес" style="-fx-background-color: #49423d; -fx-text-fill: #FFFFFF; -fx-prompt-text-fill: #FEFFFE; -fx-background-radius:  0 20px 20px 0;">
+                        <font>
+                           <Font name="Arial Italic" size="16.0" />
+                        </font>
+                     </TextField>
+                     <Button fx:id="buttonLogin" layoutX="299.0" layoutY="297.0" mnemonicParsing="false" onAction="#onLoginButtonClicked" prefHeight="46.0" prefWidth="161.0" style="-fx-background-radius: 30px; -fx-background-color: #ff4e33; -fx-border-radius: 30px;" text="Войти" textFill="#fff5f7">
+                        <font>
+                           <Font name="System Bold Italic" size="18.0" />
+                        </font>
+                        <cursor>
+                           <Cursor fx:constant="HAND" />
+                        </cursor>
+                     </Button>
+                     <PasswordField fx:id="passwordField" layoutX="43.0" layoutY="201.0" prefHeight="43.0" prefWidth="673.0" promptText="Пароль" style="-fx-background-color: #49423d; -fx-prompt-text-fill: #FEFFFE; -fx-text-fill: #FFFFFF;  -fx-background-radius:  0 20px 20px 0;">
+                        <font>
+                           <Font name="Arial Italic" size="16.0" />
+                        </font>
+                     </PasswordField>
+                  </children>
+               </Pane>
+               <Pane layoutX="482.0" layoutY="415.0" prefHeight="402.0" prefWidth="798.0" style="-fx-background-color: ff4e33; -fx-background-radius: 50px 0 0 50px;">
+                  <children>
+                     <Label layoutX="231.0" layoutY="137.0" text="У вас нет аккаунта?" textFill="#fff5f7">
+                        <font>
+                           <Font name="Cambria Bold" size="32.0" />
+                        </font>
+                     </Label>
+                     <Button fx:id="buttonRegister" layoutX="271.0" layoutY="258.0" mnemonicParsing="false" onAction="#onRegisterButtonClicked" prefHeight="46.0" prefWidth="222.0" style="-fx-background-radius: 30px; -fx-background-color: ff4e33; -fx-border-radius: 30px; -fx-border-color: fff5f7;" text="Зарегистрироваться" textFill="#fff5f7">
+                        <font>
+                           <Font name="System Bold Italic" size="18.0" />
+                        </font>
+                        <cursor>
+                           <Cursor fx:constant="HAND" />
+                        </cursor>
+                     </Button>
+                     <Label layoutX="97.0" layoutY="190.0" prefHeight="37.0" prefWidth="604.0" style="-fx-wrap-text: wrap;" text="чтобы воспользоваться нашим приложением, пожалуйста, зарегситрируйтесь в" textFill="#fff5f7">
+                        <font>
+                           <Font name="Arial" size="15.0" />
+                        </font>
+                     </Label>
+                     <Label layoutX="254.0" layoutY="217.0" text="системе, указав свои личные данные" textFill="#fff5f7">
+                        <font>
+                           <Font size="15.0" />
+                        </font>
+                     </Label>
+                  </children>
+               </Pane>
+               <Label fx:id="labelMessage" alignment="TOP_RIGHT" disable="true" layoutX="1873.0" layoutY="14.0" prefHeight="46.0" prefWidth="673.0" styleClass="notification" text="Error label" visible="false" wrapText="true">
+                  <font>
+                     <Font name="Arial Italic" size="19.0" />
+                  </font>
+               </Label>
             </children>
-        </GridPane>
-        <Label fx:id="labelMessage" styleClass="notification" StackPane.alignment="TOP_RIGHT" />
-    </children>
-</StackPane>
+</AnchorPane>

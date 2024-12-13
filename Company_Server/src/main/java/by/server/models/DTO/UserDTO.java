@@ -20,14 +20,14 @@ public class UserDTO {
         this.username = user.getUsername();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
-        this.dataCreation = user.getDateCreation();
+        this.dateCreation = user.getDateCreation();
         this.role = user.getRole().getRole();
     }
 
     private Long userId;
     private String password;
     private String username;
-    private Timestamp dataCreation;
+    private Timestamp dateCreation;
     private String email;
     private String firstName;
     private String lastName;
