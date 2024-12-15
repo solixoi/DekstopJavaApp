@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import jakarta.persistence.*;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,5 +32,16 @@ public class Log {
     public Log(User user, String action) {
         this.user = user;
         this.action = action;
+    }
+
+    @Column(name = "date_creation")
+    private Timestamp dateCreation;
+
+    @PrePersist
+    protected void onCreate() {
+        if (dateCreation == null) {
+            long currentTimeInSeconds = System.currentTimeMillis() / 1000 * 1000;
+            dateCreation = new Timestamp(currentTimeInSeconds);
+        }
     }
 }

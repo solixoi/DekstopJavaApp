@@ -4,6 +4,7 @@ import by.server.models.entities.*;
 import by.server.models.enums.RequestType;
 import by.server.models.enums.ResponseStatus;
 import by.server.models.tcp.Response;
+import by.server.repositories.ProductRepository;
 import by.server.service.*;
 import by.server.utility.ClientThread;
 import by.server.utility.JPAUtil;
@@ -29,9 +30,9 @@ public class Main {
     private static Thread thread;
     private static List<Socket> currentSockets = new ArrayList<>();
 
-
     public static void main(String[] args) throws IOException {
         JPAUtil.getEntityManagerFactory();
+
         serverSocket = new ServerSocket(PORT);
         while (true) {
             Iterator<Socket> iterator = currentSockets.iterator();

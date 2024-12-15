@@ -19,7 +19,7 @@
                            <Font name="Cambria Bold" size="31.0" />
                         </font>
                      </Label>
-                     <TextField fx:id="textfieldLogin" layoutX="43.0" layoutY="114.0" prefHeight="43.0" prefWidth="673.0" promptText="Логин или электронный адрес" style="-fx-background-color: #49423d; -fx-text-fill: #FFFFFF; -fx-prompt-text-fill: #FEFFFE; -fx-background-radius:  0 20px 20px 0;">
+                     <TextField fx:id="textfieldLogin" layoutX="43.0" layoutY="114.0" prefHeight="43.0" prefWidth="673.0" promptText="Логин или электронный адрес" style="-fx-background-color: #49423d; -fx-text-fill: #FFFFFF; -fx-prompt-text-fill: #0a0909; -fx-background-radius:  0 20px 20px 0;">
                         <font>
                            <Font name="Arial Italic" size="16.0" />
                         </font>
@@ -32,7 +32,7 @@
                            <Cursor fx:constant="HAND" />
                         </cursor>
                      </Button>
-                     <PasswordField fx:id="passwordField" layoutX="43.0" layoutY="201.0" prefHeight="43.0" prefWidth="673.0" promptText="Пароль" style="-fx-background-color: #49423d; -fx-prompt-text-fill: #FEFFFE; -fx-text-fill: #FFFFFF;  -fx-background-radius:  0 20px 20px 0;">
+                     <PasswordField fx:id="passwordField" layoutX="43.0" layoutY="201.0" prefHeight="43.0" prefWidth="673.0" promptText="Пароль" style="-fx-background-color: #49423d; -fx-prompt-text-fill: #0a0909; -fx-text-fill: #FFFFFF;  -fx-background-radius:  0 20px 20px 0;">
                         <font>
                            <Font name="Arial Italic" size="16.0" />
                         </font>

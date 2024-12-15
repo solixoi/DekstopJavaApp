@@ -22,4 +22,12 @@ public class RealizationExpensesService {
         RealizationExpenses realizationExpenses = realExpensesRepo.findByProductId(productId);
         return realizationExpenses.getRealizationId();
     }
+
+    public RealizationExpenses findById(Long id){
+        return realExpensesRepo.findById(id);
+    }
+
+    public void delete(RealizationExpenses realizationExpenses) {
+        realExpensesRepo.delete(realizationExpenses);
+    }
 }

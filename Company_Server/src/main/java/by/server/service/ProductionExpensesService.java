@@ -2,6 +2,7 @@ package by.server.service;
 
 import by.server.models.entities.Product;
 import by.server.models.entities.ProductionExpenses;
+import by.server.models.entities.RealizationExpenses;
 import by.server.models.entities.User;
 import by.server.repositories.ProductionExpensesRepository;
 import by.server.repositories.UserRepository;
@@ -20,5 +21,13 @@ public class ProductionExpensesService {
     public Long findProductId(Long productId){
         ProductionExpenses productionExpenses = prExpensesRepo.findByProductId(productId);
         return productionExpenses.getProductionId();
+    }
+
+    public ProductionExpenses findById(Long id){
+        return prExpensesRepo.findById(id);
+    }
+
+    public void delete(ProductionExpenses productionExpenses) {
+        prExpensesRepo.delete(productionExpenses);
     }
 }

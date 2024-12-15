@@ -23,7 +23,7 @@ public class ProductService {
         productRepo.delete(product);
     }
 
-    public Product calculateTotalPrice(long productId) {
+    public Product calculateTotalPrice(Long productId) {
         Product product = null;
         product = productRepo.calculate_total_price(productId);
         if (product == null) {
@@ -32,7 +32,7 @@ public class ProductService {
         return product;
     }
 
-    public Product findById(long productId) {
+    public Product findById(Long productId) {
         Product product = productRepo.findById(productId);
         if (product == null) {
             throw new RuntimeException("Don't find product with id!");

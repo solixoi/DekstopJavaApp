@@ -1,8 +1,6 @@
 package by.client.controller;
 
 import by.client.models.entities.Product;
-import by.client.models.entities.ProductionExpenses;
-import by.client.models.entities.RealizationExpenses;
 import by.client.models.entities.User;
 import by.client.models.enums.RequestType;
 import by.client.models.enums.ResponseStatus;
@@ -13,7 +11,6 @@ import by.client.utility.ClientSocket;
 import by.client.utility.CustomTableCellFactory;
 import by.client.utility.Information;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -35,14 +32,12 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class AllPricesPageController implements Initializable {
     @FXML
-    private Text clickedLogout, mainPageNavigation, pricesPageNavigation, adminPageNavigation, reportPageNavigation;
+    private Text controlProductNavigation, clickedLogout, mainPageNavigation, pricesPageNavigation, adminPageNavigation, reportPageNavigation;
 
     @FXML
     private TableView<Product> tableView;

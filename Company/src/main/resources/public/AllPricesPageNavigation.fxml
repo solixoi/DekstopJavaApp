@@ -111,7 +111,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </SVGPath>
-            <Text fx:id="reportPageNavigation" layoutX="40.0" visible="false" layoutY="438.0" onMouseClicked="#clickedReportPageNavigation" strokeType="OUTSIDE" strokeWidth="0.0" text="Отчетность" wrappingWidth="355.953125">
+            <Text fx:id="reportPageNavigation" layoutX="40.0" layoutY="438.0" onMouseClicked="#clickedReportPageNavigation" strokeType="OUTSIDE" strokeWidth="0.0" text="Отчетность" visible="false" wrappingWidth="355.953125">
                <font>
                   <Font name="Gabriola" size="43.0" />
                </font>
@@ -119,7 +119,7 @@
                   <Cursor fx:constant="CROSSHAIR" />
                </cursor>
             </Text>
-            <Text fx:id="adminPageNavigation" layoutX="40.0" visible="false" layoutY="528.0" onMouseClicked="#clickedAdminPageNavigation" strokeType="OUTSIDE" strokeWidth="0.0" text="Админ панель" wrappingWidth="355.953125">
+            <Text fx:id="adminPageNavigation" layoutX="40.0" layoutY="528.0" onMouseClicked="#clickedAdminPageNavigation" strokeType="OUTSIDE" strokeWidth="0.0" text="Админ панель" visible="false" wrappingWidth="355.953125">
                <font>
                   <Font name="Gabriola" size="43.0" />
                </font>
@@ -178,7 +178,7 @@
             <TableView fx:id="tableView" layoutX="69.0" layoutY="104.0" prefHeight="1100.0" prefWidth="1820.0" style=" -fx-font-family: 'Gabriola'; -fx-font-size: 2.2em; -fx-border-color: #dcdcdc; -fx-background-color: #313540;">
 
                <columns>
-                  <TableColumn fx:id="numberColumn"  prefWidth="70.0" style="-fx-alignment: CENTER;  -fx-border-color: #bcbcbc; -fx-background-color: #e0e0e0;" text="№" />
+                  <TableColumn fx:id="numberColumn" prefWidth="70.0" style="-fx-alignment: CENTER;  -fx-border-color: #bcbcbc; -fx-background-color: #e0e0e0;" text="№" />
                   <TableColumn fx:id="nameColumn" prefWidth="265.0" style="-fx-alignment: CENTER-LEFT; " text="Наименования продукта" />
                   <TableColumn fx:id="revenueColumn" minWidth="0.0" prefWidth="255.0" style="-fx-alignment: CENTER-RIGHT;" text="Планируемая выручка" />
                   <TableColumn fx:id="costColumn" minWidth="0.0" prefWidth="260.0" style="-fx-alignment: CENTER-RIGHT; " text="Полная себестоимость" />
@@ -186,7 +186,7 @@
                   <TableColumn fx:id="priceColumn" minWidth="0.0" prefWidth="260.0" style="-fx-alignment: CENTER-RIGHT; " text="Окончательная цена" />
                   <TableColumn fx:id="editColumn" minWidth="0.0" prefWidth="140.0" style="-fx-alignment: CENTER;  -fx-background-color: #ffe6cc;" text="Изменить" />
                   <TableColumn fx:id="deleteColumn" minWidth="0.0" prefWidth="140.0" style="-fx-alignment: CENTER; -fx-background-color: #ffcccc;" text="Удалить" />
-                  <TableColumn fx:id="viewColumn" minWidth="0.0" prefWidth="310.0" style="-fx-alignment: CENTER-LEFT; -fx-background-color: #e6f7ff;" text="Просмотреть информацию" />
+                  <TableColumn fx:id="viewColumn" minWidth="0.0" prefWidth="303.0" style="-fx-alignment: CENTER-LEFT; -fx-background-color: #e6f7ff;" text="Просмотреть информацию" />
                </columns>
             </TableView>
 

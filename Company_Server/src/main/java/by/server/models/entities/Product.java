@@ -40,17 +40,12 @@ public class Product {
     @JoinColumn(name = "created_by")
     private User createdBy;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private ProductionExpenses productionExpenses;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private RealizationExpenses realizationExpenses;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PriceHistory> priceHistory;
-
-    @Override
-    public String toString() {
-        return "id: " + productId + " " +  productName;
-    }
 }

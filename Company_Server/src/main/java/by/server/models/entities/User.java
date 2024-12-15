@@ -67,7 +67,7 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Log> logs;
 
-    @OneToMany(mappedBy = "createdBy", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Product> products;
 
 }

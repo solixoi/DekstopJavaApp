@@ -7,12 +7,14 @@ import by.client.models.tcp.Request;
 import by.client.models.tcp.Response;
 import by.client.utility.ClientSocket;
 import by.client.utility.Information;
+import by.client.utility.ValidationUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,8 +25,10 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class LoginController {
+public class LoginController implements Initializable {
 
     @FXML
     private TextField textfieldLogin;
@@ -38,17 +42,29 @@ public class LoginController {
     @FXML
     private Button buttonRegister;
 
-    @FXML
-    public void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
 
     }
 
     @FXML
     public void onLoginButtonClicked() throws IOException {
         User user = new User();
-        String login = textfieldLogin.getText();
+        if (!ValidationUtils.isEmail(textfieldLogin.getText())) {
+            if (!ValidationUtils.validateLogin(textfieldLogin.getText())) {
+                showMessage("Некорректный ввод: допустимы только email или username.", "error");
+                return;
+            } else {
+                user.setUsername(textfieldLogin.getText());
+            }
+        } else {
+            user.setEmail(textfieldLogin.getText());
+        }
+        if (!ValidationUtils.validatePassword(passwordField.getText())) {
+            showMessage("Пароль должен быть не менее 8 символов, содержать буквы и цифры.", "error");
+            return;
+        }
         String password = passwordField.getText();
-        user.setUsername(login);
         user.setPassword(password);
 
         Request request = new Request();
@@ -58,7 +74,7 @@ public class LoginController {
         String answer = ClientSocket.getInstance().getIn().readLine();
         if (answer != null) {
             Response response = new Gson().fromJson(answer, Response.class);
-            if ( response.getStatus() != ResponseStatus.ERROR && response.getResponseData() != null) {
+            if (response.getStatus() != ResponseStatus.ERROR && response.getResponseData() != null) {
                 User responseUser = new Gson().fromJson(response.getResponseData(), User.class);
                 if (response.getStatus() == ResponseStatus.OK) {
                     showMessage("Successfully login!", "success");

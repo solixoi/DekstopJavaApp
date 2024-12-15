@@ -11,6 +11,7 @@ import by.client.models.tcp.Request;
 import by.client.models.tcp.Response;
 import by.client.utility.ClientSocket;
 import by.client.utility.Information;
+import by.client.utility.ValidationUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javafx.animation.KeyFrame;
@@ -234,6 +235,57 @@ public class EditPageController implements Initializable {
 
     public void clickedButtonUpdate (ActionEvent actionEvent) throws IOException {
         Request request = new Request();
+
+        if (!ValidationUtils.validateProductName(productNameField.getText())) {
+            showMessage("Ошибка валидации: Некорректное название изделия от 2 до 30 символов", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(plannedRevenueField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение ожидаемой выручки", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(wagesCostField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение расходов на заработную плату", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(materialCostField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение расходов на материалы", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(overheadCostField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение накладных расходов", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(otherExpensesProductionField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение прочих расходов на производство", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(marketingCostField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение расходов на маркетинг", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(distributionCostField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение расходов на распределение", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(transportationCostField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение расходов на транспортировку", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(otherExpensesRealizationField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение прочих расходов на реализацию", "error");
+            return;
+        }
+
 
         JsonObject jsonObject = new JsonObject();
         User user = ClientSocket.getInstance().getUser().clone();

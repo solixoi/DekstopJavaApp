@@ -10,6 +10,7 @@ import by.client.models.enums.Roles;
 import by.client.models.tcp.Request;
 import by.client.models.tcp.Response;
 import by.client.utility.ClientSocket;
+import by.client.utility.ValidationUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javafx.animation.KeyFrame;
@@ -70,17 +71,67 @@ public class PricesPageController implements Initializable {
         User user = ClientSocket.getInstance().getUser().clone();
         user.setRole(null);
 
+        if (!ValidationUtils.validateProductName(productNameField.getText())) {
+            showMessage("Ошибка валидации: Некорректное название изделия от 2 до 30 символов", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(plannedRevenueField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение ожидаемой выручки", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(wagesCostField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение расходов на заработную плату", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(materialCostField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение расходов на материалы", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(overheadCostField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение накладных расходов", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(otherExpensesProductionField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение прочих расходов на производство", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(marketingCostField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение расходов на маркетинг", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(distributionCostField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение расходов на распределение", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(transportationCostField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение расходов на транспортировку", "error");
+            return;
+        }
+
+        if (!ValidationUtils.validateBigDecimalField(otherExpensesRealizationField.getText())) {
+            showMessage("Ошибка валидации: Некорректное значение прочих расходов на реализацию", "error");
+            return;
+        }
+
 
         Product sendProduct = new Product(user, productNameField.getText(), BigDecimal.valueOf(Long.parseLong(plannedRevenueField.getText())));
         jsonObject.add("product", new Gson().toJsonTree(sendProduct));
 
-        ProductionExpenses productionExpenses = new ProductionExpenses( BigDecimal.valueOf(Long.parseLong(wagesCostField.getText())), BigDecimal.valueOf(Long.parseLong(materialCostField.getText())),
-                BigDecimal.valueOf(Long.parseLong(overheadCostField.getText())),  BigDecimal.valueOf(Long.parseLong(otherExpensesProductionField.getText())));
+        ProductionExpenses productionExpenses = new ProductionExpenses(BigDecimal.valueOf(Long.parseLong(wagesCostField.getText())), BigDecimal.valueOf(Long.parseLong(materialCostField.getText())),
+                BigDecimal.valueOf(Long.parseLong(overheadCostField.getText())), BigDecimal.valueOf(Long.parseLong(otherExpensesProductionField.getText())));
         jsonObject.add("ProductionExpenses", new Gson().toJsonTree(productionExpenses));
 
 
-        RealizationExpenses realizationExpenses = new RealizationExpenses( BigDecimal.valueOf(Long.parseLong(marketingCostField.getText())), BigDecimal.valueOf(Long.parseLong(distributionCostField.getText())),
-                BigDecimal.valueOf(Long.parseLong(transportationCostField.getText())),  BigDecimal.valueOf(Long.parseLong(otherExpensesRealizationField.getText())));
+        RealizationExpenses realizationExpenses = new RealizationExpenses(BigDecimal.valueOf(Long.parseLong(marketingCostField.getText())), BigDecimal.valueOf(Long.parseLong(distributionCostField.getText())),
+                BigDecimal.valueOf(Long.parseLong(transportationCostField.getText())), BigDecimal.valueOf(Long.parseLong(otherExpensesRealizationField.getText())));
         jsonObject.add("RealizationExpenses", new Gson().toJsonTree(realizationExpenses));
 
         request.setRequestMessage(new Gson().toJson(jsonObject));

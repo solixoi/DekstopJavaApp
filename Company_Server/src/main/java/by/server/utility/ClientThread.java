@@ -9,6 +9,8 @@ import by.server.models.tcp.Request;
 import by.server.models.tcp.Response;
 import by.server.service.*;
 import com.google.gson.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,6 +32,7 @@ public class ClientThread implements Runnable {
     private final LogService logService = new LogService();
     private final PriceHistoryService priceHistoryService = new PriceHistoryService();
     private final ReportService reportService = new ReportService();
+    private final BanService banService = new BanService();
 
     private Request request;
     private Response response;
@@ -122,7 +125,7 @@ public class ClientThread implements Runnable {
                             PriceHistory priceHistory = new PriceHistory();
                             Product product = gson.fromJson(productElement, Product.class);
                             priceHistory.setProduct(product);
-                            priceHistory.setOldPrice(product.getFinalPrice());
+                            priceHistory.setOldPrice(productService.findById(product.getProductId()).getFinalPrice());
                             ProductionExpenses productionExpenses = null;
                             RealizationExpenses realizationExpenses = null;
                             JsonElement userJSON = jsonObject.get("user");
@@ -167,9 +170,12 @@ public class ClientThread implements Runnable {
                     case DELETE_USER_PRODUCT -> {
                         try {
                             Product product = gson.fromJson(request.getRequestMessage(), Product.class);
+                            Long usId = product.getCreatedBy().getUserId();
+                            product.setCreatedBy(null);
+                            productService.update(product);
                             productService.delete(productService.findById(product.getProductId()));
+                            User user = userService.findById(usId);
                             List<ProductDTO> products = null;
-                            User user = userService.findById(product.getCreatedBy().getUserId());
                             if (!user.getProducts().isEmpty()) {
                                 products = new ArrayList<>();
                                 for (Product ProductElement : user.getProducts()) {
@@ -223,6 +229,8 @@ public class ClientThread implements Runnable {
                     case UPDATE_USER_ACCOUNT -> {
                         try {
                             User user = gson.fromJson(request.getRequestMessage(), User.class);
+                            user.setPassword(PasswordHashingUtil.hashPassword(user.getPassword()));
+                            user.setRole(userService.findById(user.getUserId()).getRole());
                             userService.update(user);
                             logService.save(user, RequestType.UPDATE_USER_ACCOUNT.toString());
                             response = new Response(ResponseStatus.OK, "Update successfully!", gson.toJson(new UserDTO(user)));
@@ -243,63 +251,21 @@ public class ClientThread implements Runnable {
                         }
                         break;
                     }
-                    case CHANGE_PASSWORD -> {
-                        try {
-                            JsonObject jsonObject = JsonParser.parseString(request.getRequestMessage()).getAsJsonObject();
-                            JsonElement userJSON = jsonObject.get("user");
-                            User user = gson.fromJson(userJSON, User.class);
-                            JsonElement new_password = jsonObject.get("newPassword");
-                            String password = gson.fromJson(new_password, String.class);
-                            if(!PasswordHashingUtil.verifyPassword(password, userService.findById(user.getUserId()).getPassword())){
-                                throw new RuntimeException("Password does not match!");
-                            }
-                            user.setPassword(PasswordHashingUtil.hashPassword(password));
-                            logService.save(user, RequestType.CHANGE_PASSWORD.toString());
-                            response = new Response(ResponseStatus.OK, "Change successfully!", gson.toJson(new UserDTO(user)));
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
-                            response = new Response(ResponseStatus.ERROR, e.getMessage(), null);
-                        }
-                        break;
-                    }
                     case CHANGE_ROLE -> {
                         try {
                             JsonObject jsonObject = JsonParser.parseString(request.getRequestMessage()).getAsJsonObject();
                             JsonElement userJSON = jsonObject.get("user");
-                            User userAdmin = gson.fromJson(userJSON, User.class);
                             JsonElement userID = jsonObject.get("user_id");
-                            Long userId = gson.fromJson(userID, Long.class);
                             JsonElement roleJSON = jsonObject.get("role");
-                            Roles role = gson.fromJson(roleJSON, Roles.class);
-                            User user = userService.findById(userId);
-                            user.setRole(new Role(user, role));
-                            userService.save(user);
-                            logService.save(userAdmin, RequestType.CHANGE_ROLE.toString() + " for " + user.getUsername());
+                            User user = userService.findById(gson.fromJson(userID, Long.class));
+                            if(user.getRole().getRole() == Roles.ADMIN) {
+                                throw new RuntimeException("You cant change Admin Role");
+                            }
+                            user.getRole().setRole(gson.fromJson(roleJSON, Roles.class));
+                            userService.update(user);
+                            logService.save(gson.fromJson(userJSON, User.class), RequestType.CHANGE_ROLE + " for " + user.getUsername());
                             response = new Response(ResponseStatus.OK, "Change successfully!", gson.toJson(new UserDTO(user)));
                         } catch (Exception e) {
-                            System.out.println(e.getMessage());
-                            response = new Response(ResponseStatus.ERROR, e.getMessage(), null);
-                        }
-                        break;
-                    }
-                    case GET_LOG_INFO -> {
-                        try {
-                            JsonObject jsonObject = JsonParser.parseString(request.getRequestMessage()).getAsJsonObject();
-                            JsonElement userJSON = jsonObject.get("user");
-                            User userAdmin = gson.fromJson(userJSON, User.class);
-                            JsonElement userID = jsonObject.get("user_id");
-                            Long userId = gson.fromJson(userID, Long.class);
-                            User user = userService.findById(userId);
-                            List<LogDTO> logs = null;
-                            if(!user.getLogs().isEmpty()) {
-                                logs = new ArrayList<>();
-                                for (Log log : user.getLogs()) {
-                                    logs.add(new LogDTO(log));
-                                }
-                            }
-                            logService.save(userAdmin, RequestType.GET_LOG_INFO.toString());
-                            response = new Response(ResponseStatus.OK, "Get successfully!", gson.toJson(logs));
-                        } catch (Exception e){
                             System.out.println(e.getMessage());
                             response = new Response(ResponseStatus.ERROR, e.getMessage(), null);
                         }
@@ -354,6 +320,8 @@ public class ClientThread implements Runnable {
                             JsonElement userJSON = jsonObject.get("user");
                             User userAdmin = gson.fromJson(userJSON, User.class);
                             Product product = gson.fromJson(productElement, Product.class);
+                            product.setCreatedBy(null);
+                            productService.update(product);
                             productService.delete(productService.findById(product.getProductId()));
                             List<ProductDTO> products = null;
                             if(!productService.findAll().isEmpty()) {
@@ -362,7 +330,7 @@ public class ClientThread implements Runnable {
                                     products.add(new ProductDTO(elementProduct));
                                 }
                             }
-                            logService.save(userAdmin, RequestType.DELETE_USER_PRODUCT.toString());
+                            logService.save(userAdmin, RequestType.DELETE_PRODUCT.toString());
                             response = new Response(ResponseStatus.OK, "Delete successfully!", gson.toJson(products));
                         } catch (Exception e){
                             System.out.println(e.getMessage());
@@ -377,13 +345,16 @@ public class ClientThread implements Runnable {
                             JsonElement userID = jsonObject.get("user_id");
                             User userAdmin = gson.fromJson(userJSON, User.class);
                             User user = userService.findById(userID.getAsLong());
+
                             if(user.getRole().getRole() == Roles.ADMIN){
                                 throw new RuntimeException("You cant ban admin!");
                             }
-                                user.setBan(new Ban(user, true));
                             if (user.getBan().isBanned()){
                                 throw new RuntimeException("User is banned!");
                             }
+
+                            user.getBan().setBanned(true);
+                            userService.update(user);
                             logService.save(userAdmin, RequestType.BAN_USER + " for " + user.getUsername());
                             response = new Response(ResponseStatus.OK, "Ban user successfully!", gson.toJson(new UserDTO(user)));
                         } catch (Exception e){
@@ -405,7 +376,8 @@ public class ClientThread implements Runnable {
                             if (!user.getBan().isBanned()){
                                 throw new RuntimeException("User is not banned!");
                             }
-                            user.setBan(new Ban(user, false));
+                            user.getBan().setBanned(false);
+                            userService.update(user);
                             logService.save(userAdmin, RequestType.UNBAN_USER + " for " + user.getUsername());
                             response = new Response(ResponseStatus.OK, "Un ban user successfully!", gson.toJson(new UserDTO(user)));
                         } catch (Exception e){
@@ -425,8 +397,16 @@ public class ClientThread implements Runnable {
                                 throw new RuntimeException("You cant delete admin account!");
                             }
                             userService.delete(user);
+                            List<UserDTO> users = null;
+                            if (!userService.findAll().isEmpty()) {
+                                users = new ArrayList<>();
+                                for (User userElement : userService.findAll()) {
+                                    users.add(new UserDTO(userElement));
+                                }
+                            }
+                            System.out.println(users == null);
                             logService.save(userAdmin, RequestType.DELETE_ACCOUNT + " for " + user.getUsername());
-                            response = new Response(ResponseStatus.OK, "Delete successfully!", null);
+                            response = new Response(ResponseStatus.OK, "Delete successfully!", gson.toJson(users));
                         } catch (Exception e){
                             System.out.println(e.getMessage());
                             response = new Response(ResponseStatus.ERROR, e.getMessage(), null);
@@ -442,6 +422,22 @@ public class ClientThread implements Runnable {
                             User userAdmin = gson.fromJson(userJSON, User.class);
                             logService.save(userAdmin, RequestType.GET_USER_INFO + " for " + user.getUsername());
                             response = new Response(ResponseStatus.OK, "Get user info successfully!", gson.toJson(new UserDTO(user)));
+                        } catch (Exception e){
+                            System.out.println(e.getMessage());
+                            response = new Response(ResponseStatus.ERROR, e.getMessage(), null);
+                        }
+                        break;
+                    }
+                    case GET_LOG_INFO -> {
+                        try {
+                            JsonObject jsonObject = JsonParser.parseString(request.getRequestMessage()).getAsJsonObject();
+                            JsonElement userJSON = jsonObject.get("user");
+                            User userAdmin = gson.fromJson(userJSON, User.class);
+                            JsonElement userID = jsonObject.get("user_id");
+
+                            byte[] pdfBytes = reportService.createLogReport(gson.fromJson(userID, Long.class));
+                            logService.save(userAdmin, RequestType.GET_LOG_INFO.toString());
+                            response = new Response(ResponseStatus.OK, "Get successfully!", null, pdfBytes);
                         } catch (Exception e){
                             System.out.println(e.getMessage());
                             response = new Response(ResponseStatus.ERROR, e.getMessage(), null);
@@ -506,7 +502,7 @@ public class ClientThread implements Runnable {
                         try {
                             User user = gson.fromJson(request.getRequestMessage(), User.class);
                             List<UserDTO> users = null;
-                            if (userService.findAll().isEmpty()) {
+                            if (!userService.findAll().isEmpty()) {
                                 users = new ArrayList<>();
                                 for (User userElement : userService.findAll()) {
                                     users.add(new UserDTO(userElement));
@@ -524,7 +520,7 @@ public class ClientThread implements Runnable {
                         try {
                             User user = gson.fromJson(request.getRequestMessage(), User.class);
                             List<ProductDTO> products = null;
-                            if (productService.findAll().isEmpty()){
+                            if (!productService.findAll().isEmpty()){
                                 products = new ArrayList<>();
                                 for (Product product : productService.findAll()) {
                                     products.add(new ProductDTO(product));
@@ -538,21 +534,17 @@ public class ClientThread implements Runnable {
                         }
                         break;
                     }
-                    case GET_ALL_BANS -> {
+                    case CREATE_REPORT_PRICE_HISTORY -> {
                         try {
-                            User user = gson.fromJson(request.getRequestMessage(), User.class);
-                            List<UserDTO> users = null;
-                            if (userService.findAll().isEmpty()) {
-                                users = new ArrayList<>();
-                                for (User userElement : userService.findAll()) {
-                                    if(userElement.getBan().isBanned()) {
-                                        users.add(new UserDTO(userElement));
-                                    }
-                                }
-                            }
-                            logService.save(user, RequestType.GET_ALL_BANS.toString());
-                            response = new Response(ResponseStatus.OK, "Get user ban info successfully!", gson.toJson(users));
-                        } catch (Exception e){
+                            JsonObject jsonObject = JsonParser.parseString(request.getRequestMessage()).getAsJsonObject();
+                            JsonElement userManagerJSON = jsonObject.get("user");
+                            User userManager = gson.fromJson(userManagerJSON, User.class);
+                            userManager = userService.findById(userManager.getUserId());
+                            JsonElement productIdElement = jsonObject.get("product_id");
+                            byte[] pdfBytes = reportService.createReportHistoryProduct(productIdElement.getAsLong());
+                            logService.save(userManager, RequestType.CREATE_REPORT_EXPENSES_PRODUCT.toString());
+                            response = new Response(ResponseStatus.OK, "Expenses report generated successfully!", null, pdfBytes);
+                        } catch (Exception e) {
                             System.out.println(e.getMessage());
                             response = new Response(ResponseStatus.ERROR, e.getMessage(), null);
                         }

@@ -6,12 +6,14 @@ import by.client.models.enums.ResponseStatus;
 import by.client.models.tcp.Request;
 import by.client.models.tcp.Response;
 import by.client.utility.ClientSocket;
+import by.client.utility.ValidationUtils;
 import com.google.gson.Gson;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -20,8 +22,10 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class RegisterController {
+public class RegisterController implements Initializable {
     @FXML
     private TextField textfieldFirstName;
     @FXML
@@ -38,23 +42,41 @@ public class RegisterController {
     private PasswordField passwordfieldPasswordEquals;
     @FXML
     private Label labelMessage;
-    @FXML
-    private Label labelMessage1;
-    @FXML
-    private GridPane formContainer;
 
-    @FXML
-    public void initialize() {
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
     }
 
     @FXML
     public void onRegisterButtonClicked(ActionEvent event) throws IOException {
-        Request request = new Request();
-        User user = new User();
-        if (!passwordfieldPassword.getText().equals(passwordfieldPasswordEquals.getText())) {
-            showMessage("Пароли не совпадают", "error");
+        if (!ValidationUtils.validateName(textfieldFirstName.getText())) {
+            showMessage("Ошибка валидации имени: допустимы только буквы, длина от 2 до 15 символов.", "error");
             return;
         }
+        if (!ValidationUtils.validateSurname(textfieldLastName.getText())) {
+            showMessage("Ошибка валидации имени: допустимы только буквы, длина от 2 до 15 символов.", "error");
+            return;
+        }
+        if (!ValidationUtils.validateLogin(textfieldUsername.getText())) {
+            showMessage("Ошибка валидации логина: длина от 4 до 14 символов.", "error");
+            return;
+        }
+        if (!ValidationUtils.validateEmail(textfieldEmail.getText())) {
+            showMessage("Ошибка валидации электронной почты: формат example@test.com.", "error");
+            return;
+        }
+        if (!ValidationUtils.validatePassword(passwordfieldPassword.getText())) {
+            showMessage("Пароль должен быть не менее 8 символов, содержать буквы и цифры.", "error");
+            return;
+        }
+        if (!passwordfieldPassword.getText().equals(passwordfieldPasswordEquals.getText())) {
+            showMessage("Пароли не совпадают.", "error");
+            return;
+        }
+        Request request = new Request();
+        User user = new User();
         user.setFirstName(textfieldFirstName.getText());
         user.setLastName(textfieldLastName.getText());
         user.setUsername(textfieldUsername.getText());

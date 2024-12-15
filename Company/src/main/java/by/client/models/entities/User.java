@@ -27,4 +27,14 @@ public class User implements Cloneable{
             throw new RuntimeException(e);
         }
     }
+
+    public User(Long userId, Timestamp dateCreation, String email,  String firstName, String lastName, String password, String username) {
+        this.userId = userId;
+        this.dateCreation = dateCreation;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.username = username;
+    }
 }

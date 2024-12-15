@@ -3,6 +3,7 @@ package by.client.utility;
 import by.client.models.entities.Product;
 import by.client.models.entities.ProductionExpenses;
 import by.client.models.entities.RealizationExpenses;
+import by.client.models.entities.User;
 import lombok.Getter;
 
 @Getter
@@ -41,5 +42,15 @@ public class Information {
 
     public Product getProduct() {
         return product;
+    }
+
+    public static User user;
+
+    public void setUser(User user) {
+        Information.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 }
