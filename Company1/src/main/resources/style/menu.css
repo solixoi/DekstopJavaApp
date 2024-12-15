@@ -1,0 +1,24 @@
+.context-menu {
+    -fx-background-color: grey;
+}
+
+.context-menu .menu-item {
+    -fx-font-family: 'Gabriola';
+    -fx-font-size: 22px;
+    -fx-text-fill: black;
+    -fx-background-color: grey;
+    -fx-padding: 10px 20px;
+}
+
+.context-menu .menu-item:hover {
+    -fx-background-color: pink;
+    -fx-cursor: HAND;
+}
+
+.context-menu .menu-item:focused {
+    -fx-background-color: grey;
+}
+
+.table-view .scroll-pane {
+    -fx-hbar-policy: NEVER;
+}

@@ -1,0 +1,19 @@
+.notification {
+    -fx-text-fill: white;
+    -fx-opacity: 0;
+    -fx-transition: -fx-opacity 0.5s, -fx-translate-y 0.5s;
+    -fx-alignment: CENTER;
+    -fx-position: absolute;
+    -fx-background-radius: 30px;
+}
+
+
+.notification.success {
+    -fx-background-color: green;
+    -fx-opacity: 1;
+}
+
+.notification.error {
+    -fx-background-color: red;
+    -fx-opacity: 1;
+}
