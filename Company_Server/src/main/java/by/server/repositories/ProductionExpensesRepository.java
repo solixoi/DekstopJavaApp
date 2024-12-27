@@ -10,6 +10,7 @@ public class ProductionExpensesRepository extends GenericRepository<ProductionEx
         super(ProductionExpenses.class);
     }
 
+
     public ProductionExpenses findByProductId(Long id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {

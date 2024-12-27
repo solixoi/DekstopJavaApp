@@ -6,12 +6,10 @@ import ch.qos.logback.classic.LoggerContext;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import jakarta.persistence.Query;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
-import java.sql.Connection;
 import java.util.*;
 import java.util.stream.Collectors;
 
